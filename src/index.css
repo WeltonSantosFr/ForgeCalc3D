@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Cores do Design System ForgeCalc3D */
+  --color-primary: #065F46;       /* Emerald 800 */
+  --color-primary-hover: #047857; /* Emerald 700 */
+  --color-primary-light: #ECFDF5; /* Emerald 50 */
+  --color-primary-badge: #D1FAE5; /* Emerald 100 */
+
+  --color-bg-main: #F8FAFC;        /* Slate 50 */
+  --color-surface: #FFFFFF;        /* White */
+  --color-text-main: #0F172A;      /* Slate 900 */
+  --color-text-muted: #64748B;     /* Slate 500 */
+  --color-border-subtle: #E2E8F0;  /* Slate 200 */
+}
+
+/* Regras Globais e Safe Areas para Mobile */
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #F8FAFC;
+  color: #0F172A;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+input, textarea, select {
+  user-select: auto;
+}
+
+/* Tipografia de Cabeçalhos */
+h1, h2, h3, h4, .font-heading {
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+}
+
+/* Scrollbar sutil */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}

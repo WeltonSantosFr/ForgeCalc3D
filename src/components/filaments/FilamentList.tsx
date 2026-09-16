@@ -1,0 +1,257 @@
+import React, { useState } from 'react';
+import { useLiveQuery } from 'dexie-react-hooks';
+import {
+  Plus,
+  Search,
+  Layers,
+  Edit2,
+  Trash2,
+  Calculator,
+} from 'lucide-react';
+import { db } from '../../db/db';
+import type { Filament } from '../../types';
+import { useCalculatorStore } from '../../store/useCalculatorStore';
+import { Button } from '../common/Button';
+import { Input } from '../common/Input';
+import { FilamentModal } from './FilamentModal';
+import { formatCurrency, formatGrams, formatPercent } from '../../utils/formatters';
+
+export const FilamentList: React.FC = () => {
+  const filaments = useLiveQuery(() => db.filaments.toArray()) || [];
+  const { setInput, setActiveTab } = useCalculatorStore();
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedMaterial, setSelectedMaterial] = useState<string>('all');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filamentToEdit, setFilamentToEdit] = useState<Filament | null>(null);
+
+  // Lista única de materiais presentes nos cadastros
+  const uniqueMaterials = Array.from(
+    new Set(filaments.map((f) => f.material.toUpperCase()))
+  );
+
+  // Filtros aplicados
+  const filteredFilaments = filaments.filter((f) => {
+    const matchesSearch =
+      f.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      f.material.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesMaterial =
+      selectedMaterial === 'all' ||
+      f.material.toUpperCase() === selectedMaterial.toUpperCase();
+    return matchesSearch && matchesMaterial;
+  });
+
+  const handleEdit = (filament: Filament) => {
+    setFilamentToEdit(filament);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (id: string, name: string) => {
+    if (window.confirm(`Deseja realmente excluir o filamento "${name}"?`)) {
+      await db.filaments.delete(id);
+    }
+  };
+
+  const handleUseInCalculator = (filament: Filament) => {
+    setInput({
+      filamentId: filament.id,
+      lossMarginPercent: filament.defaultLossMarginPercent ?? 5,
+    });
+    setActiveTab('calculator');
+  };
+
+  return (
+    <div className="space-y-5 animate-in fade-in duration-200">
+      {/* Cabeçalho da Seção */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h1 className="font-heading text-2xl font-extrabold text-slate-900 flex items-center gap-2">
+            <Layers className="w-6 h-6 text-[#065F46]" />
+            Gestão de Filamentos & Resinas
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Cadastre seus carretéis e acompanhe o custo exato por grama de cada material
+          </p>
+        </div>
+        <Button
+          variant="primary"
+          icon={<Plus className="w-4 h-4" />}
+          onClick={() => {
+            setFilamentToEdit(null);
+            setIsModalOpen(true);
+          }}
+        >
+          Novo Filamento
+        </Button>
+      </div>
+
+      {/* Barra de Busca e Filtros por Material */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex-1">
+          <Input
+            icon={<Search className="w-4 h-4" />}
+            placeholder="Buscar por nome ou material..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
+        {/* Chips de Materiais */}
+        {uniqueMaterials.length > 0 && (
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+            <button
+              onClick={() => setSelectedMaterial('all')}
+              className={`text-xs px-3 py-2 rounded-lg border font-medium whitespace-nowrap transition-colors ${
+                selectedMaterial === 'all'
+                  ? 'bg-[#065F46] text-white border-[#065F46]'
+                  : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+              }`}
+            >
+              Todos ({filaments.length})
+            </button>
+            {uniqueMaterials.map((mat) => (
+              <button
+                key={mat}
+                onClick={() => setSelectedMaterial(mat)}
+                className={`text-xs px-3 py-2 rounded-lg border font-medium whitespace-nowrap transition-colors ${
+                  selectedMaterial === mat
+                    ? 'bg-[#065F46] text-white border-[#065F46]'
+                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                {mat}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Grid de Cards de Filamentos */}
+      {filteredFilaments.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+          {filteredFilaments.map((f) => {
+            const costPerGram = f.spoolWeightGrams > 0 ? f.spoolPrice / f.spoolWeightGrams : 0;
+
+            return (
+              <div
+                key={f.id}
+                className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs hover:shadow-sm transition-shadow flex flex-col justify-between"
+              >
+                <div>
+                  {/* Topo do Card */}
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className="w-4 h-4 rounded-full border border-slate-300 shrink-0 shadow-2xs"
+                        style={{ backgroundColor: f.colorHex || '#0F172A' }}
+                        title={`Cor: ${f.colorHex || '#0F172A'}`}
+                      />
+                      <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                        {f.material}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => handleEdit(f)}
+                        className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                        title="Editar"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(f.id, f.name)}
+                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                        title="Excluir"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Nome do Filamento */}
+                  <h2 className="font-heading text-[16px] font-bold text-slate-900 leading-snug mb-3">
+                    {f.name}
+                  </h2>
+
+                  {/* Detalhes Financeiros */}
+                  <div className="space-y-1.5 text-xs text-slate-600 mb-4 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Preço do Carretel:</span>
+                      <span className="font-semibold text-slate-900">
+                        {formatCurrency(f.spoolPrice)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Peso do Carretel:</span>
+                      <span className="font-semibold text-slate-900">
+                        {formatGrams(f.spoolWeightGrams)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-500">Perda Padrão:</span>
+                      <span className="font-semibold text-slate-900">
+                        {formatPercent(f.defaultLossMarginPercent)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between pt-1 border-t border-slate-200/60">
+                      <span className="font-semibold text-[#065F46]">Custo por Grama:</span>
+                      <span className="font-extrabold text-[#065F46] text-sm">
+                        {formatCurrency(costPerGram)}/g
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Botão Usar na Calculadora */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  fullWidth
+                  icon={<Calculator className="w-3.5 h-3.5" />}
+                  onClick={() => handleUseInCalculator(f)}
+                >
+                  Usar na Calculadora
+                </Button>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        /* Empty State */
+        <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-8 sm:p-12 text-center">
+          <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-[#065F46] flex items-center justify-center mx-auto mb-3">
+            <Layers className="w-6 h-6" />
+          </div>
+          <h2 className="font-heading text-lg font-bold text-slate-900 mb-1">
+            {searchTerm || selectedMaterial !== 'all'
+              ? 'Nenhum filamento encontrado'
+              : 'Nenhum filamento cadastrado ainda'}
+          </h2>
+          <p className="text-xs text-slate-500 max-w-sm mx-auto mb-5">
+            {searchTerm || selectedMaterial !== 'all'
+              ? 'Tente remover os filtros ou buscar por outro termo.'
+              : 'Cadastre os filamentos e resinas que você utiliza no seu estúdio para agilizar orçamentos automáticos.'}
+          </p>
+          <Button
+            variant="primary"
+            icon={<Plus className="w-4 h-4" />}
+            onClick={() => {
+              setFilamentToEdit(null);
+              setIsModalOpen(true);
+            }}
+          >
+            Cadastrar Primeiro Filamento
+          </Button>
+        </div>
+      )}
+
+      {/* Modal de Cadastro / Edição */}
+      <FilamentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        filamentToEdit={filamentToEdit}
+      />
+    </div>
+  );
+};
