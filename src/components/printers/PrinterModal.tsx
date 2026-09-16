@@ -119,6 +119,7 @@ export const PrinterModal: React.FC<PrinterModalProps> = ({
         <div className="grid grid-cols-2 gap-3">
           <Input
             label="Consumo Médio (Watts) *"
+            labelClassName="min-h-[2rem] sm:min-h-0"
             type="number"
             step="1"
             min="1"
@@ -136,6 +137,7 @@ export const PrinterModal: React.FC<PrinterModalProps> = ({
           />
           <Input
             label="Tarifa de Energia (R$/kWh) *"
+            labelClassName="min-h-[2rem] sm:min-h-0"
             type="number"
             step="any"
             min="0"
@@ -195,10 +197,10 @@ export const PrinterModal: React.FC<PrinterModalProps> = ({
 
         {/* Botões de Ação */}
         <div className="flex justify-end gap-2 pt-2">
-          <Button type="button" variant="secondary" onClick={onClose}>
+          <Button type="button" variant="secondary" onClick={onClose} className="leading-tight py-1.5 sm:py-2">
             Cancelar
           </Button>
-          <Button type="submit" variant="primary">
+          <Button type="submit" variant="primary" className="leading-tight py-1.5 sm:py-2">
             {printerToEdit ? 'Salvar Alterações' : 'Cadastrar Impressora'}
           </Button>
         </div>

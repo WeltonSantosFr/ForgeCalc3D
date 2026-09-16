@@ -42,6 +42,7 @@ export const LaborAndExtras: React.FC = () => {
           <div className="grid grid-cols-2 gap-3">
             <Input
               label="Tempo de Trabalho"
+              labelClassName="min-h-[2rem] sm:min-h-0"
               type="number"
               step="1"
               min="0"
@@ -60,6 +61,7 @@ export const LaborAndExtras: React.FC = () => {
             />
             <Input
               label="Valor da sua Hora"
+              labelClassName="min-h-[2rem] sm:min-h-0"
               type="number"
               step="any"
               min="0"
