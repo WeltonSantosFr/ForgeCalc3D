@@ -94,6 +94,7 @@ export const FilamentSelector: React.FC = () => {
           <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200/80">
             <Input
               label="Preço do Carretel"
+              labelClassName="min-h-[2rem] sm:min-h-0"
               type="number"
               step="any"
               min="0"
@@ -111,6 +112,7 @@ export const FilamentSelector: React.FC = () => {
             />
             <Input
               label="Peso do Carretel"
+              labelClassName="min-h-[2rem] sm:min-h-0"
               type="number"
               step="1"
               min="1"
@@ -144,6 +146,7 @@ export const FilamentSelector: React.FC = () => {
         <div className="grid grid-cols-2 gap-3">
           <Input
             label="Peso da Peça (Slicer)"
+            labelClassName="min-h-[2rem] sm:min-h-0"
             type="number"
             step="any"
             min="0"
@@ -168,6 +171,7 @@ export const FilamentSelector: React.FC = () => {
           />
           <Input
             label="Margem de Perda"
+            labelClassName="min-h-[2rem] sm:min-h-0"
             type="number"
             step="any"
             min="0"

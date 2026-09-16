@@ -205,6 +205,7 @@ ${pieceName ? `📦 Peça: *${pieceName}*` : ''}
           <div className="grid grid-cols-2 gap-3">
             <Input
               label="Margem Revenda"
+              labelClassName="min-h-[2rem] sm:min-h-0"
               type="number"
               step="any"
               min="1"
@@ -221,6 +222,7 @@ ${pieceName ? `📦 Peça: *${pieceName}*` : ''}
             />
             <Input
               label="Margem Consumidor"
+              labelClassName="min-h-[2rem] sm:min-h-0"
               type="number"
               step="any"
               min="1"
@@ -347,7 +349,8 @@ ${pieceName ? `📦 Peça: *${pieceName}*` : ''}
           <Button
             variant="outline"
             onClick={handleCopySummary}
-            icon={copiedNotification ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
+            className="leading-tight py-1.5 sm:py-2"
+            icon={copiedNotification ? <Check className="w-4 h-4 shrink-0" /> : <Share2 className="w-4 h-4 shrink-0" />}
           >
             {copiedNotification ? 'Copiado!' : 'Compartilhar'}
           </Button>
@@ -358,7 +361,8 @@ ${pieceName ? `📦 Peça: *${pieceName}*` : ''}
               setSavePieceName(pieceName || '');
               setIsSaveModalOpen(true);
             }}
-            icon={<BookmarkCheck className="w-4 h-4" />}
+            className="leading-tight py-1.5 sm:py-2"
+            icon={<BookmarkCheck className="w-4 h-4 shrink-0" />}
           >
             Salvar Orçamento
           </Button>

@@ -3,6 +3,8 @@ import { sanitizeNumericString } from '../../utils/inputs';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
+  labelClassName?: string;
+  containerClassName?: string;
   helperText?: string;
   error?: string;
   prefixText?: string;
@@ -14,6 +16,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
     {
       label,
+      labelClassName = '',
+      containerClassName = '',
       helperText,
       error,
       prefixText,
@@ -148,11 +152,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       : 'border-slate-200 focus-within:border-[#065F46] focus-within:ring-1 focus-within:ring-[#065F46]';
 
     return (
-      <div className="w-full">
+      <div className={`w-full ${containerClassName}`}>
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-xs font-medium text-slate-700 mb-1.5"
+            className={`block text-xs font-medium text-slate-700 mb-1.5 leading-4 ${labelClassName}`}
           >
             {label}
           </label>

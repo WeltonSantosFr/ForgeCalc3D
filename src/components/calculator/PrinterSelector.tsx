@@ -151,6 +151,7 @@ export const PrinterSelector: React.FC = () => {
         <div className="grid grid-cols-2 gap-3">
           <Input
             label="Horas de Impressão"
+            labelClassName="min-h-[2rem] sm:min-h-0"
             type="number"
             step="1"
             min="0"
@@ -168,6 +169,7 @@ export const PrinterSelector: React.FC = () => {
           />
           <Input
             label="Minutos de Impressão"
+            labelClassName="min-h-[2rem] sm:min-h-0"
             type="number"
             step="1"
             min="0"

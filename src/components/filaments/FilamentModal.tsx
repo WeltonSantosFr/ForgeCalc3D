@@ -127,6 +127,7 @@ export const FilamentModal: React.FC<FilamentModalProps> = ({
         <div className="grid grid-cols-2 gap-3">
           <Input
             label="Preço do Carretel (R$) *"
+            labelClassName="min-h-[2rem] sm:min-h-0"
             type="number"
             step="any"
             min="0"
@@ -143,6 +144,7 @@ export const FilamentModal: React.FC<FilamentModalProps> = ({
           />
           <Input
             label="Peso Total Líquido *"
+            labelClassName="min-h-[2rem] sm:min-h-0"
             type="number"
             step="1"
             min="1"
@@ -163,6 +165,7 @@ export const FilamentModal: React.FC<FilamentModalProps> = ({
         <div className="grid grid-cols-2 gap-3">
           <Input
             label="Margem de Perda Padrão"
+            labelClassName="min-h-[2rem] sm:min-h-0"
             type="number"
             step="any"
             min="0"
@@ -181,7 +184,7 @@ export const FilamentModal: React.FC<FilamentModalProps> = ({
             }
           />
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1.5">
+            <label className="block text-xs font-medium text-slate-700 mb-1.5 leading-4 min-h-[2rem] sm:min-h-0">
               Cor de Referência
             </label>
             <div className="flex items-center gap-2 h-10 px-3 rounded-lg border border-slate-200 bg-white">
@@ -208,10 +211,10 @@ export const FilamentModal: React.FC<FilamentModalProps> = ({
 
         {/* Botões de Ação */}
         <div className="flex justify-end gap-2 pt-2">
-          <Button type="button" variant="secondary" onClick={onClose}>
+          <Button type="button" variant="secondary" onClick={onClose} className="leading-tight py-1.5 sm:py-2">
             Cancelar
           </Button>
-          <Button type="submit" variant="primary">
+          <Button type="submit" variant="primary" className="leading-tight py-1.5 sm:py-2">
             {filamentToEdit ? 'Salvar Alterações' : 'Cadastrar Filamento'}
           </Button>
         </div>
