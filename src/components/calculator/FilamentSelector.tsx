@@ -7,6 +7,7 @@ import { Card } from '../common/Card';
 import { Input } from '../common/Input';
 import { Select } from '../common/Select';
 import { formatCurrency } from '../../utils/formatters';
+import { parseNumericInput, parseIntegerInput } from '../../utils/inputs';
 
 export const FilamentSelector: React.FC = () => {
   const { input, setInput, setActiveTab } = useCalculatorStore();
@@ -15,8 +16,8 @@ export const FilamentSelector: React.FC = () => {
   const selectedFilament = filaments.find((f) => f.id === input.filamentId);
 
   // Calcula custo por grama em tempo real
-  const spoolPrice = selectedFilament ? selectedFilament.spoolPrice : (input.manualSpoolPrice ?? 110);
-  const spoolWeight = selectedFilament ? selectedFilament.spoolWeightGrams : (input.manualSpoolWeightGrams ?? 1000);
+  const spoolPrice = selectedFilament ? selectedFilament.spoolPrice : (Number(input.manualSpoolPrice) || 0);
+  const spoolWeight = selectedFilament ? selectedFilament.spoolWeightGrams : (Number(input.manualSpoolWeightGrams) || 0);
   const costPerGram = spoolWeight > 0 ? spoolPrice / spoolWeight : 0;
 
   const handleFilamentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -94,14 +95,19 @@ export const FilamentSelector: React.FC = () => {
             <Input
               label="Preço do Carretel"
               type="number"
-              step="0.01"
+              step="any"
               min="0"
               prefixText="R$"
               value={input.manualSpoolPrice ?? ''}
               onChange={(e) =>
-                setInput({ manualSpoolPrice: parseFloat(e.target.value) || 0 })
+                setInput({ manualSpoolPrice: parseNumericInput(e.target.value) })
               }
               placeholder="110.00"
+              error={
+                typeof input.manualSpoolPrice === 'number' && input.manualSpoolPrice < 0
+                  ? 'Preço não pode ser negativo'
+                  : undefined
+              }
             />
             <Input
               label="Peso do Carretel"
@@ -111,9 +117,14 @@ export const FilamentSelector: React.FC = () => {
               suffixText="g"
               value={input.manualSpoolWeightGrams ?? ''}
               onChange={(e) =>
-                setInput({ manualSpoolWeightGrams: parseFloat(e.target.value) || 0 })
+                setInput({ manualSpoolWeightGrams: parseIntegerInput(e.target.value) })
               }
               placeholder="1000"
+              error={
+                typeof input.manualSpoolWeightGrams === 'number' && input.manualSpoolWeightGrams <= 0
+                  ? 'Peso deve ser maior que 0g'
+                  : undefined
+              }
             />
           </div>
         )}
@@ -134,29 +145,46 @@ export const FilamentSelector: React.FC = () => {
           <Input
             label="Peso da Peça (Slicer)"
             type="number"
-            step="0.1"
+            step="any"
             min="0"
             suffixText="g"
-            value={input.filamentWeightGrams || ''}
+            value={input.filamentWeightGrams ?? ''}
             onChange={(e) =>
-              setInput({ filamentWeightGrams: parseFloat(e.target.value) || 0 })
+              setInput({ filamentWeightGrams: parseNumericInput(e.target.value) })
             }
             placeholder="Ex: 85"
-            helperText="Peso indicado no fatiador"
+            helperText={
+              typeof input.filamentWeightGrams === 'number' &&
+              spoolWeight > 0 &&
+              input.filamentWeightGrams > spoolWeight
+                ? 'Aviso: Peso da peça maior que o carretel total'
+                : 'Peso indicado no fatiador'
+            }
+            error={
+              typeof input.filamentWeightGrams === 'number' && input.filamentWeightGrams < 0
+                ? 'Peso não pode ser negativo'
+                : undefined
+            }
           />
           <Input
             label="Margem de Perda"
             type="number"
-            step="1"
+            step="any"
             min="0"
             max="100"
             suffixText="%"
-            value={input.lossMarginPercent ?? 5}
+            value={input.lossMarginPercent ?? ''}
             onChange={(e) =>
-              setInput({ lossMarginPercent: parseFloat(e.target.value) || 0 })
+              setInput({ lossMarginPercent: parseNumericInput(e.target.value) })
             }
             placeholder="5"
             helperText="Purgas, brim, falhas (padrão 5%)"
+            error={
+              typeof input.lossMarginPercent === 'number' &&
+              (input.lossMarginPercent < 0 || input.lossMarginPercent > 100)
+                ? 'Margem deve estar entre 0% e 100%'
+                : undefined
+            }
           />
         </div>
       </div>

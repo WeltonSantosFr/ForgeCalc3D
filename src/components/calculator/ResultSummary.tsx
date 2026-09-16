@@ -14,6 +14,7 @@ import { db } from '../../db/db';
 import { useCalculatorStore } from '../../store/useCalculatorStore';
 import { computeCalculation } from '../../utils/calculations';
 import { formatCurrency, formatGrams, formatPercent } from '../../utils/formatters';
+import { parseNumericInput } from '../../utils/inputs';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { Modal } from '../common/Modal';
@@ -38,12 +39,13 @@ export const ResultSummary: React.FC = () => {
 
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [savePieceName, setSavePieceName] = useState(pieceName || '');
+  const [savePieceNameError, setSavePieceNameError] = useState('');
   const [saveNotes, setSaveNotes] = useState('');
   const [copiedNotification, setCopiedNotification] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  // Cálculo das porcentagens de cada custo sobre o total
-  const total = result.totalCost || 0.001; // evita divisão por zero
+  // Percentuais de cada elemento no custo total para visualização gráfica
+  const total = result.totalCost > 0 ? result.totalCost : 1;
   const filamentPercent = (result.filamentCost / total) * 100;
   const energyPercent = (result.energyCost / total) * 100;
   const laborPercent = (result.laborCost / total) * 100;
@@ -53,7 +55,11 @@ export const ResultSummary: React.FC = () => {
   // Salvar orçamento no Dexie
   const handleSaveCalculation = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!savePieceName.trim()) return;
+    if (!savePieceName.trim()) {
+      setSavePieceNameError('O nome da peça / projeto é obrigatório');
+      return;
+    }
+    setSavePieceNameError('');
 
     await db.savedCalculations.add({
       id: `calc-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
@@ -200,23 +206,33 @@ ${pieceName ? `📦 Peça: *${pieceName}*` : ''}
             <Input
               label="Margem Revenda"
               type="number"
-              step="0.1"
+              step="any"
               min="1"
               suffixText="x"
-              value={input.resellerMultiplier || 3.0}
+              value={input.resellerMultiplier ?? ''}
               onChange={(e) =>
-                setInput({ resellerMultiplier: parseFloat(e.target.value) || 1 })
+                setInput({ resellerMultiplier: parseNumericInput(e.target.value) })
+              }
+              error={
+                typeof input.resellerMultiplier === 'number' && input.resellerMultiplier < 1
+                  ? 'Mínimo de 1.0x'
+                  : undefined
               }
             />
             <Input
               label="Margem Consumidor"
               type="number"
-              step="0.1"
+              step="any"
               min="1"
               suffixText="x"
-              value={input.retailMultiplier || 5.0}
+              value={input.retailMultiplier ?? ''}
               onChange={(e) =>
-                setInput({ retailMultiplier: parseFloat(e.target.value) || 1 })
+                setInput({ retailMultiplier: parseNumericInput(e.target.value) })
+              }
+              error={
+                typeof input.retailMultiplier === 'number' && input.retailMultiplier < 1
+                  ? 'Mínimo de 1.0x'
+                  : undefined
               }
             />
           </div>
@@ -356,12 +372,16 @@ ${pieceName ? `📦 Peça: *${pieceName}*` : ''}
         title="Salvar Orçamento"
         subtitle="Armazene o orçamento para consultas futuras no histórico offline"
       >
-        <form onSubmit={handleSaveCalculation} className="space-y-4">
+        <form noValidate onSubmit={handleSaveCalculation} className="space-y-4">
           <Input
             label="Nome da Peça / Projeto *"
             placeholder="Ex: Suporte de Headset Articulado"
             value={savePieceName}
-            onChange={(e) => setSavePieceName(e.target.value)}
+            onChange={(e) => {
+              setSavePieceName(e.target.value);
+              if (savePieceNameError) setSavePieceNameError('');
+            }}
+            error={savePieceNameError || undefined}
             required
             autoFocus
           />

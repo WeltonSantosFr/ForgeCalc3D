@@ -5,6 +5,7 @@ import { Card } from '../common/Card';
 import { Input } from '../common/Input';
 import { Button } from '../common/Button';
 import { formatCurrency } from '../../utils/formatters';
+import { parseNumericInput, parseIntegerInput } from '../../utils/inputs';
 
 export const LaborAndExtras: React.FC = () => {
   const { input, setInput, addExtraCost, removeExtraCost } = useCalculatorStore();
@@ -14,7 +15,7 @@ export const LaborAndExtras: React.FC = () => {
 
   const handleAddExtra = (e: React.FormEvent) => {
     e.preventDefault();
-    const costNum = parseFloat(newCost);
+    const costNum = Number(parseNumericInput(newCost));
     if (!newDesc.trim() || isNaN(costNum) || costNum <= 0) return;
 
     addExtraCost(newDesc.trim(), costNum);
@@ -23,7 +24,7 @@ export const LaborAndExtras: React.FC = () => {
   };
 
   const extrasTotal = (input.extraCosts || []).reduce((sum, item) => sum + (Number(item.cost) || 0), 0);
-  const laborCostCalculated = ((input.laborMinutes || 0) / 60) * (input.laborRatePerHour || 0);
+  const laborCostCalculated = ((Number(input.laborMinutes) || 0) / 60) * (Number(input.laborRatePerHour) || 0);
 
   return (
     <Card
@@ -45,26 +46,36 @@ export const LaborAndExtras: React.FC = () => {
               step="1"
               min="0"
               suffixText="min"
-              value={input.laborMinutes || ''}
+              value={input.laborMinutes ?? ''}
               onChange={(e) =>
-                setInput({ laborMinutes: parseInt(e.target.value, 10) || 0 })
+                setInput({ laborMinutes: parseIntegerInput(e.target.value) })
               }
               placeholder="Ex: 15"
               helperText="Remover suportes, acabamento, fatiamento"
+              error={
+                typeof input.laborMinutes === 'number' && input.laborMinutes < 0
+                  ? 'Tempo não pode ser negativo'
+                  : undefined
+              }
             />
             <Input
               label="Valor da sua Hora"
               type="number"
-              step="1"
+              step="any"
               min="0"
               prefixText="R$"
               suffixText="/h"
-              value={input.laborRatePerHour || ''}
+              value={input.laborRatePerHour ?? ''}
               onChange={(e) =>
-                setInput({ laborRatePerHour: parseFloat(e.target.value) || 0 })
+                setInput({ laborRatePerHour: parseNumericInput(e.target.value) })
               }
               placeholder="30.00"
               helperText="Configuração padrão nas Settings"
+              error={
+                typeof input.laborRatePerHour === 'number' && input.laborRatePerHour < 0
+                  ? 'Valor da hora não pode ser negativo'
+                  : undefined
+              }
             />
           </div>
 
@@ -124,7 +135,7 @@ export const LaborAndExtras: React.FC = () => {
           )}
 
           {/* Formulário rápido para adicionar item extra */}
-          <form onSubmit={handleAddExtra} className="grid grid-cols-12 gap-2">
+          <form noValidate onSubmit={handleAddExtra} className="grid grid-cols-12 gap-2">
             <div className="col-span-6 sm:col-span-7">
               <Input
                 type="text"
@@ -136,7 +147,7 @@ export const LaborAndExtras: React.FC = () => {
             <div className="col-span-4 sm:col-span-3">
               <Input
                 type="number"
-                step="0.10"
+                step="any"
                 min="0"
                 prefixText="R$"
                 placeholder="2.50"

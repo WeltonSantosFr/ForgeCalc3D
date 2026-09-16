@@ -7,6 +7,7 @@ import { Card } from '../common/Card';
 import { Input } from '../common/Input';
 import { Select } from '../common/Select';
 import { formatCurrency, formatNumber } from '../../utils/formatters';
+import { parseNumericInput, parseIntegerInput } from '../../utils/inputs';
 
 export const PrinterSelector: React.FC = () => {
   const { input, setInput, setActiveTab } = useCalculatorStore();
@@ -14,9 +15,9 @@ export const PrinterSelector: React.FC = () => {
 
   const selectedPrinter = printers.find((p) => p.id === input.printerId);
 
-  const powerWatts = selectedPrinter ? selectedPrinter.powerWatts : (input.manualPowerWatts ?? 150);
+  const powerWatts = selectedPrinter ? selectedPrinter.powerWatts : (Number(input.manualPowerWatts) || 0);
 
-  const decimalHours = (input.printHours || 0) + (input.printMinutes || 0) / 60;
+  const decimalHours = (Number(input.printHours) || 0) + (Number(input.printMinutes) || 0) / 60;
   const estimatedKwh = (powerWatts / 1000) * decimalHours;
 
   const handlePrinterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -90,43 +91,58 @@ export const PrinterSelector: React.FC = () => {
             <Input
               label="Consumo Médio"
               type="number"
-              step="5"
+              step="1"
               min="0"
               suffixText="W"
               value={input.manualPowerWatts ?? ''}
               onChange={(e) =>
-                setInput({ manualPowerWatts: parseFloat(e.target.value) || 0 })
+                setInput({ manualPowerWatts: parseNumericInput(e.target.value) })
               }
               placeholder="150"
               helperText="Potência típica (ex: 150W)"
+              error={
+                typeof input.manualPowerWatts === 'number' && input.manualPowerWatts < 0
+                  ? 'Potência não pode ser negativa'
+                  : undefined
+              }
             />
             <Input
               label="Tarifa de Energia"
               type="number"
-              step="0.01"
+              step="any"
               min="0"
               prefixText="R$"
               suffixText="/kWh"
               value={input.manualEnergyRateKwh ?? ''}
               onChange={(e) =>
-                setInput({ manualEnergyRateKwh: parseFloat(e.target.value) || 0 })
+                setInput({ manualEnergyRateKwh: parseNumericInput(e.target.value) })
               }
               placeholder="0.85"
               helperText="Preço do kWh da sua conta"
+              error={
+                typeof input.manualEnergyRateKwh === 'number' && input.manualEnergyRateKwh < 0
+                  ? 'Tarifa não pode ser negativa'
+                  : undefined
+              }
             />
             <Input
               label="Desgaste/Manutenção"
               type="number"
-              step="0.1"
+              step="any"
               min="0"
               prefixText="R$"
               suffixText="/h"
               value={input.manualMaintenanceRatePerHour ?? ''}
               onChange={(e) =>
-                setInput({ manualMaintenanceRatePerHour: parseFloat(e.target.value) || 0 })
+                setInput({ manualMaintenanceRatePerHour: parseNumericInput(e.target.value) })
               }
               placeholder="1.50"
               helperText="Depreciação e peças por hora"
+              error={
+                typeof input.manualMaintenanceRatePerHour === 'number' && input.manualMaintenanceRatePerHour < 0
+                  ? 'Taxa não pode ser negativa'
+                  : undefined
+              }
             />
           </div>
         )}
@@ -139,11 +155,16 @@ export const PrinterSelector: React.FC = () => {
             step="1"
             min="0"
             suffixText="h"
-            value={input.printHours || ''}
+            value={input.printHours ?? ''}
             onChange={(e) =>
-              setInput({ printHours: parseInt(e.target.value, 10) || 0 })
+              setInput({ printHours: parseIntegerInput(e.target.value) })
             }
             placeholder="0"
+            error={
+              typeof input.printHours === 'number' && input.printHours < 0
+                ? 'Horas não podem ser negativas'
+                : undefined
+            }
           />
           <Input
             label="Minutos de Impressão"
@@ -152,11 +173,17 @@ export const PrinterSelector: React.FC = () => {
             min="0"
             max="59"
             suffixText="min"
-            value={input.printMinutes || ''}
+            value={input.printMinutes ?? ''}
             onChange={(e) =>
-              setInput({ printMinutes: parseInt(e.target.value, 10) || 0 })
+              setInput({ printMinutes: parseIntegerInput(e.target.value) })
             }
             placeholder="0"
+            error={
+              typeof input.printMinutes === 'number' &&
+              (input.printMinutes < 0 || input.printMinutes > 59)
+                ? 'Minutos devem estar entre 0 e 59'
+                : undefined
+            }
           />
         </div>
 

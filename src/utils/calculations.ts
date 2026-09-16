@@ -87,28 +87,30 @@ export function computeCalculation(
   printer?: Printer
 ): CalculationResult {
   // Dados do filamento
-  const spoolPrice = filament ? filament.spoolPrice : (input.manualSpoolPrice ?? 0);
-  const spoolWeightGrams = filament ? filament.spoolWeightGrams : (input.manualSpoolWeightGrams ?? 1000);
-  const lossMargin = input.lossMarginPercent ?? (filament ? filament.defaultLossMarginPercent : 0);
+  const spoolPrice = filament ? filament.spoolPrice : (Number(input.manualSpoolPrice) || 0);
+  const spoolWeightGrams = filament ? filament.spoolWeightGrams : (Number(input.manualSpoolWeightGrams) || 1000);
+  const lossMargin = input.lossMarginPercent !== '' && input.lossMarginPercent !== undefined
+    ? Number(input.lossMarginPercent)
+    : (filament ? filament.defaultLossMarginPercent : 0);
 
   const { costPerGram, weightWithLoss, totalFilamentCost } = calculateFilamentCost(
     spoolPrice,
     spoolWeightGrams,
-    input.filamentWeightGrams ?? 0,
+    Number(input.filamentWeightGrams) || 0,
     lossMargin
   );
 
   // Dados da impressora e tempo
-  const powerWatts = printer ? printer.powerWatts : (input.manualPowerWatts ?? 0);
-  const energyRateKwh = printer ? printer.energyRateKwh : (input.manualEnergyRateKwh ?? 0.85);
-  const maintenanceRate = printer ? printer.maintenanceRatePerHour : (input.manualMaintenanceRatePerHour ?? 0);
+  const powerWatts = printer ? printer.powerWatts : (Number(input.manualPowerWatts) || 0);
+  const energyRateKwh = printer ? printer.energyRateKwh : (Number(input.manualEnergyRateKwh) || 0.85);
+  const maintenanceRate = printer ? printer.maintenanceRatePerHour : (Number(input.manualMaintenanceRatePerHour) || 0);
 
-  const decimalHours = calculateDecimalHours(input.printHours ?? 0, input.printMinutes ?? 0);
+  const decimalHours = calculateDecimalHours(Number(input.printHours) || 0, Number(input.printMinutes) || 0);
   const kwhConsumption = calculateEnergyConsumption(powerWatts, decimalHours);
   const energyCost = calculateEnergyCost(kwhConsumption, energyRateKwh);
 
   // Mão de obra e manutenção
-  const laborCost = calculateLaborCost(input.laborMinutes ?? 0, input.laborRatePerHour ?? 0);
+  const laborCost = calculateLaborCost(Number(input.laborMinutes) || 0, Number(input.laborRatePerHour) || 0);
   const maintenanceCost = calculateMaintenanceCost(decimalHours, maintenanceRate);
 
   // Custos Extras
@@ -118,8 +120,8 @@ export function computeCalculation(
   const totalCost = totalFilamentCost + extraCostsTotal + energyCost + laborCost + maintenanceCost;
 
   // Multiplicadores e Preços de Venda Sugeridos
-  const resellerMultiplier = Math.max(1, input.resellerMultiplier || 3.0);
-  const retailMultiplier = Math.max(1, input.retailMultiplier || 5.0);
+  const resellerMultiplier = Math.max(1, Number(input.resellerMultiplier) || 3.0);
+  const retailMultiplier = Math.max(1, Number(input.retailMultiplier) || 5.0);
 
   const resellerPrice = totalCost * resellerMultiplier;
   const retailPrice = totalCost * retailMultiplier;
