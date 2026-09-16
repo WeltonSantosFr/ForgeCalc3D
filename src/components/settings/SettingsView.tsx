@@ -14,15 +14,25 @@ import { db, DEFAULT_SETTINGS } from '../../db/db';
 import { exportDatabaseToJson, importDatabaseFromJson, type ImportSummary } from '../../db/backup';
 import type { Settings } from '../../types';
 import { useCalculatorStore } from '../../store/useCalculatorStore';
+import { parseNumericInput } from '../../utils/inputs';
 import { Card } from '../common/Card';
 import { Input } from '../common/Input';
 import { Button } from '../common/Button';
+
+type SettingsFormState = {
+  id: number;
+  defaultLaborRatePerHour: number | '';
+  defaultEnergyRateKwh: number | '';
+  resellerMultiplier: number | '';
+  retailMultiplier: number | '';
+  updatedAt: string;
+};
 
 export const SettingsView: React.FC = () => {
   const currentSettings = useLiveQuery(() => db.settings.get(1));
   const { applySettingsDefaults } = useCalculatorStore();
 
-  const [formData, setFormData] = useState<Settings>(DEFAULT_SETTINGS);
+  const [formData, setFormData] = useState<SettingsFormState>(DEFAULT_SETTINGS);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [exportSuccess, setExportSuccess] = useState<string | null>(null);
   const [importSummary, setImportSummary] = useState<ImportSummary | null>(null);
@@ -42,10 +52,10 @@ export const SettingsView: React.FC = () => {
     const updated: Settings = {
       ...formData,
       id: 1,
-      defaultLaborRatePerHour: Math.max(0, formData.defaultLaborRatePerHour || 0),
-      defaultEnergyRateKwh: Math.max(0, formData.defaultEnergyRateKwh || 0),
-      resellerMultiplier: Math.max(1, formData.resellerMultiplier || 3.0),
-      retailMultiplier: Math.max(1, formData.retailMultiplier || 5.0),
+      defaultLaborRatePerHour: Math.max(0, Number(formData.defaultLaborRatePerHour) || 0),
+      defaultEnergyRateKwh: Math.max(0, Number(formData.defaultEnergyRateKwh) || 0),
+      resellerMultiplier: Math.max(1, Number(formData.resellerMultiplier) || 3.0),
+      retailMultiplier: Math.max(1, Number(formData.retailMultiplier) || 5.0),
       updatedAt: new Date().toISOString(),
     };
 
@@ -107,42 +117,52 @@ export const SettingsView: React.FC = () => {
         title="Parâmetros Financeiros Padrão"
         subtitle="Valores utilizados como sugestão ao iniciar novos cálculos"
       >
-        <form onSubmit={handleSaveSettings} className="space-y-4">
+        <form noValidate onSubmit={handleSaveSettings} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
               label="Tarifa Padrão de Energia Elétrica (R$/kWh)"
               type="number"
-              step="0.01"
+              step="any"
               min="0"
               prefixText="R$"
               suffixText="/kWh"
-              value={formData.defaultEnergyRateKwh || ''}
+              value={formData.defaultEnergyRateKwh ?? ''}
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  defaultEnergyRateKwh: parseFloat(e.target.value) || 0,
+                  defaultEnergyRateKwh: parseNumericInput(e.target.value),
                 })
               }
               helperText="Padrão inicial: R$ 0,85/kWh"
               required
+              error={
+                typeof formData.defaultEnergyRateKwh === 'number' && formData.defaultEnergyRateKwh < 0
+                  ? 'Tarifa não pode ser negativa'
+                  : undefined
+              }
             />
 
             <Input
               label="Valor Padrão da Hora de Trabalho (R$/h)"
               type="number"
-              step="1"
+              step="any"
               min="0"
               prefixText="R$"
               suffixText="/h"
-              value={formData.defaultLaborRatePerHour || ''}
+              value={formData.defaultLaborRatePerHour ?? ''}
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  defaultLaborRatePerHour: parseFloat(e.target.value) || 0,
+                  defaultLaborRatePerHour: parseNumericInput(e.target.value),
                 })
               }
               helperText="Padrão inicial: R$ 30,00/h"
               required
+              error={
+                typeof formData.defaultLaborRatePerHour === 'number' && formData.defaultLaborRatePerHour < 0
+                  ? 'Valor da hora não pode ser negativo'
+                  : undefined
+              }
             />
           </div>
 
@@ -150,35 +170,45 @@ export const SettingsView: React.FC = () => {
             <Input
               label="Multiplicador Padrão de Revenda (Atacado)"
               type="number"
-              step="0.1"
+              step="any"
               min="1"
               suffixText="x"
-              value={formData.resellerMultiplier || ''}
+              value={formData.resellerMultiplier ?? ''}
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  resellerMultiplier: parseFloat(e.target.value) || 1,
+                  resellerMultiplier: parseNumericInput(e.target.value),
                 })
               }
               helperText="Padrão da especificação: 3.0x"
               required
+              error={
+                typeof formData.resellerMultiplier === 'number' && formData.resellerMultiplier < 1
+                  ? 'Mínimo de 1.0x'
+                  : undefined
+              }
             />
 
             <Input
               label="Multiplicador Padrão para Consumidor Final (Varejo)"
               type="number"
-              step="0.1"
+              step="any"
               min="1"
               suffixText="x"
-              value={formData.retailMultiplier || ''}
+              value={formData.retailMultiplier ?? ''}
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  retailMultiplier: parseFloat(e.target.value) || 1,
+                  retailMultiplier: parseNumericInput(e.target.value),
                 })
               }
               helperText="Padrão da especificação: 5.0x"
               required
+              error={
+                typeof formData.retailMultiplier === 'number' && formData.retailMultiplier < 1
+                  ? 'Mínimo de 1.0x'
+                  : undefined
+              }
             />
           </div>
 

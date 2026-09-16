@@ -36,31 +36,31 @@ export interface ExtraCost {
 export interface CalculationInput {
   // Filamento
   filamentId: string;
-  filamentWeightGrams: number;
-  lossMarginPercent: number;
+  filamentWeightGrams: number | '';
+  lossMarginPercent: number | '';
   // Fallbacks manuais caso não selecione filamento cadastrado
-  manualSpoolPrice?: number;
-  manualSpoolWeightGrams?: number;
+  manualSpoolPrice?: number | '';
+  manualSpoolWeightGrams?: number | '';
 
   // Impressora & Tempo
   printerId: string;
-  printHours: number;
-  printMinutes: number;
+  printHours: number | '';
+  printMinutes: number | '';
   // Fallbacks manuais caso não selecione impressora cadastrada
-  manualPowerWatts?: number;
-  manualEnergyRateKwh?: number;
-  manualMaintenanceRatePerHour?: number;
+  manualPowerWatts?: number | '';
+  manualEnergyRateKwh?: number | '';
+  manualMaintenanceRatePerHour?: number | '';
 
   // Mão de Obra
-  laborMinutes: number;
-  laborRatePerHour: number;
+  laborMinutes: number | '';
+  laborRatePerHour: number | '';
 
   // Insumos extras
   extraCosts: ExtraCost[];
 
   // Margens / Multiplicadores
-  resellerMultiplier: number;
-  retailMultiplier: number;
+  resellerMultiplier: number | '';
+  retailMultiplier: number | '';
 }
 
 export interface CalculationResult {

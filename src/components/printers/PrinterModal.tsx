@@ -5,6 +5,7 @@ import { Modal } from '../common/Modal';
 import { Input } from '../common/Input';
 import { Button } from '../common/Button';
 import { formatCurrency } from '../../utils/formatters';
+import { parseNumericInput } from '../../utils/inputs';
 
 interface PrinterModalProps {
   isOpen: boolean;
@@ -25,11 +26,13 @@ export const PrinterModal: React.FC<PrinterModalProps> = ({
   printerToEdit,
 }) => {
   const [name, setName] = useState('');
-  const [powerWatts, setPowerWatts] = useState(150);
-  const [energyRateKwh, setEnergyRateKwh] = useState(0.85);
-  const [maintenanceRatePerHour, setMaintenanceRatePerHour] = useState(1.5);
+  const [nameError, setNameError] = useState('');
+  const [powerWatts, setPowerWatts] = useState<number | ''>(150);
+  const [energyRateKwh, setEnergyRateKwh] = useState<number | ''>(0.85);
+  const [maintenanceRatePerHour, setMaintenanceRatePerHour] = useState<number | ''>(1.5);
 
   useEffect(() => {
+    setNameError('');
     if (printerToEdit) {
       setName(printerToEdit.name);
       setPowerWatts(printerToEdit.powerWatts);
@@ -45,14 +48,18 @@ export const PrinterModal: React.FC<PrinterModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    if (!name.trim()) {
+      setNameError('Nome / Modelo da máquina é obrigatório');
+      return;
+    }
+    setNameError('');
 
     const printerData: Printer = {
       id: printerToEdit ? printerToEdit.id : `prt-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       name: name.trim(),
-      powerWatts: Math.max(1, powerWatts),
-      energyRateKwh: Math.max(0, energyRateKwh),
-      maintenanceRatePerHour: Math.max(0, maintenanceRatePerHour),
+      powerWatts: Math.max(1, Number(powerWatts) || 150),
+      energyRateKwh: Math.max(0, Number(energyRateKwh) || 0),
+      maintenanceRatePerHour: Math.max(0, Number(maintenanceRatePerHour) || 0),
       createdAt: printerToEdit ? printerToEdit.createdAt : new Date().toISOString(),
     };
 
@@ -62,6 +69,7 @@ export const PrinterModal: React.FC<PrinterModalProps> = ({
 
   const handleApplyPreset = (preset: (typeof PRESET_PRINTERS)[0]) => {
     setName(preset.name);
+    setNameError('');
     setPowerWatts(preset.watts);
     setMaintenanceRatePerHour(preset.maintenance);
   };
@@ -73,7 +81,7 @@ export const PrinterModal: React.FC<PrinterModalProps> = ({
       title={printerToEdit ? 'Editar Impressora' : 'Nova Impressora'}
       subtitle="Defina o consumo elétrico e taxa de desgaste por hora"
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form noValidate onSubmit={handleSubmit} className="space-y-4">
         {/* Sugestões rápidas para novos cadastros */}
         {!printerToEdit && (
           <div>
@@ -99,7 +107,11 @@ export const PrinterModal: React.FC<PrinterModalProps> = ({
           label="Nome / Modelo da Máquina *"
           placeholder="Ex: Bambu Lab A1"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value);
+            if (nameError) setNameError('');
+          }}
+          error={nameError || undefined}
           required
           autoFocus
         />
@@ -108,27 +120,37 @@ export const PrinterModal: React.FC<PrinterModalProps> = ({
           <Input
             label="Consumo Médio (Watts) *"
             type="number"
-            step="5"
+            step="1"
             min="1"
             suffixText="W"
-            value={powerWatts || ''}
-            onChange={(e) => setPowerWatts(parseFloat(e.target.value) || 0)}
+            value={powerWatts ?? ''}
+            onChange={(e) => setPowerWatts(parseNumericInput(e.target.value))}
             placeholder="150"
             helperText="Potência média em funcionamento"
             required
+            error={
+              typeof powerWatts === 'number' && powerWatts <= 0
+                ? 'Potência deve ser maior que 0W'
+                : undefined
+            }
           />
           <Input
             label="Tarifa de Energia (R$/kWh) *"
             type="number"
-            step="0.01"
+            step="any"
             min="0"
             prefixText="R$"
             suffixText="/kWh"
-            value={energyRateKwh || ''}
-            onChange={(e) => setEnergyRateKwh(parseFloat(e.target.value) || 0)}
+            value={energyRateKwh ?? ''}
+            onChange={(e) => setEnergyRateKwh(parseNumericInput(e.target.value))}
             placeholder="0.85"
             helperText="Valor do kWh da concessionária"
             required
+            error={
+              typeof energyRateKwh === 'number' && energyRateKwh < 0
+                ? 'Tarifa não pode ser negativa'
+                : undefined
+            }
           />
         </div>
 
@@ -136,15 +158,20 @@ export const PrinterModal: React.FC<PrinterModalProps> = ({
           <Input
             label="Custo de Desgaste / Manutenção (R$/h) *"
             type="number"
-            step="0.10"
+            step="any"
             min="0"
             prefixText="R$"
             suffixText="/h"
-            value={maintenanceRatePerHour || ''}
-            onChange={(e) => setMaintenanceRatePerHour(parseFloat(e.target.value) || 0)}
+            value={maintenanceRatePerHour ?? ''}
+            onChange={(e) => setMaintenanceRatePerHour(parseNumericInput(e.target.value))}
             placeholder="1.50"
             helperText="Reserva por hora para bicos, correias, ventoinhas e depreciação"
             required
+            error={
+              typeof maintenanceRatePerHour === 'number' && maintenanceRatePerHour < 0
+                ? 'Taxa não pode ser negativa'
+                : undefined
+            }
           />
         </div>
 
@@ -152,13 +179,16 @@ export const PrinterModal: React.FC<PrinterModalProps> = ({
           <div className="flex justify-between">
             <span>Custo de energia por hora:</span>
             <span className="font-semibold text-slate-900">
-              {formatCurrency(((powerWatts / 1000) * energyRateKwh))}
+              {formatCurrency((((Number(powerWatts) || 0) / 1000) * (Number(energyRateKwh) || 0)))}
             </span>
           </div>
           <div className="flex justify-between">
             <span>Custo total de máquina por hora:</span>
             <span className="font-bold text-[#065F46]">
-              {formatCurrency(((powerWatts / 1000) * energyRateKwh) + maintenanceRatePerHour)}/h
+              {formatCurrency(
+                ((Number(powerWatts) || 0) / 1000) * (Number(energyRateKwh) || 0) +
+                  (Number(maintenanceRatePerHour) || 0)
+              )}/h
             </span>
           </div>
         </div>

@@ -27,19 +27,19 @@ interface CalculatorState {
 
 const initialInput: CalculationInput = {
   filamentId: '',
-  filamentWeightGrams: 0,
+  filamentWeightGrams: '',
   lossMarginPercent: 5,
   manualSpoolPrice: 110.0,
   manualSpoolWeightGrams: 1000,
 
   printerId: '',
-  printHours: 0,
-  printMinutes: 0,
+  printHours: '',
+  printMinutes: '',
   manualPowerWatts: 150,
   manualEnergyRateKwh: 0.85,
   manualMaintenanceRatePerHour: 1.5,
 
-  laborMinutes: 0,
+  laborMinutes: '',
   laborRatePerHour: 30.0,
 
   extraCosts: [],

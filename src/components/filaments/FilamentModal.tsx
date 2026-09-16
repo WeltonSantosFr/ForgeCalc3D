@@ -5,6 +5,7 @@ import { Modal } from '../common/Modal';
 import { Input } from '../common/Input';
 import { Button } from '../common/Button';
 import { formatCurrency } from '../../utils/formatters';
+import { parseNumericInput, parseIntegerInput } from '../../utils/inputs';
 
 interface FilamentModalProps {
   isOpen: boolean;
@@ -20,13 +21,15 @@ export const FilamentModal: React.FC<FilamentModalProps> = ({
   filamentToEdit,
 }) => {
   const [name, setName] = useState('');
+  const [nameError, setNameError] = useState('');
   const [material, setMaterial] = useState('PLA');
-  const [spoolWeightGrams, setSpoolWeightGrams] = useState(1000);
-  const [spoolPrice, setSpoolPrice] = useState(110.0);
-  const [defaultLossMarginPercent, setDefaultLossMarginPercent] = useState(5);
+  const [spoolWeightGrams, setSpoolWeightGrams] = useState<number | ''>(1000);
+  const [spoolPrice, setSpoolPrice] = useState<number | ''>(110.0);
+  const [defaultLossMarginPercent, setDefaultLossMarginPercent] = useState<number | ''>(5);
   const [colorHex, setColorHex] = useState('#0F172A');
 
   useEffect(() => {
+    setNameError('');
     if (filamentToEdit) {
       setName(filamentToEdit.name);
       setMaterial(filamentToEdit.material);
@@ -44,19 +47,24 @@ export const FilamentModal: React.FC<FilamentModalProps> = ({
     }
   }, [filamentToEdit, isOpen]);
 
-  const costPerGram = spoolWeightGrams > 0 ? spoolPrice / spoolWeightGrams : 0;
+  const costPerGram =
+    (Number(spoolWeightGrams) || 0) > 0 ? (Number(spoolPrice) || 0) / Number(spoolWeightGrams) : 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    if (!name.trim()) {
+      setNameError('Nome / Marca do filamento é obrigatório');
+      return;
+    }
+    setNameError('');
 
     const filamentData: Filament = {
       id: filamentToEdit ? filamentToEdit.id : `fil-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       name: name.trim(),
       material: material.trim() || 'PLA',
-      spoolWeightGrams: Math.max(1, spoolWeightGrams),
-      spoolPrice: Math.max(0, spoolPrice),
-      defaultLossMarginPercent: Math.max(0, defaultLossMarginPercent),
+      spoolWeightGrams: Math.max(1, Number(spoolWeightGrams) || 1000),
+      spoolPrice: Math.max(0, Number(spoolPrice) || 0),
+      defaultLossMarginPercent: Math.max(0, Number(defaultLossMarginPercent) || 0),
       colorHex,
       createdAt: filamentToEdit ? filamentToEdit.createdAt : new Date().toISOString(),
     };
@@ -72,12 +80,16 @@ export const FilamentModal: React.FC<FilamentModalProps> = ({
       title={filamentToEdit ? 'Editar Filamento' : 'Novo Filamento'}
       subtitle="Cadastre o carretel para cálculos precisos e reutilizáveis"
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form noValidate onSubmit={handleSubmit} className="space-y-4">
         <Input
           label="Nome / Marca do Filamento *"
           placeholder="Ex: PLA Preto - Voolt3D"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value);
+            if (nameError) setNameError('');
+          }}
+          error={nameError || undefined}
           required
           autoFocus
         />
@@ -116,13 +128,18 @@ export const FilamentModal: React.FC<FilamentModalProps> = ({
           <Input
             label="Preço do Carretel (R$) *"
             type="number"
-            step="0.01"
+            step="any"
             min="0"
             prefixText="R$"
-            value={spoolPrice || ''}
-            onChange={(e) => setSpoolPrice(parseFloat(e.target.value) || 0)}
+            value={spoolPrice ?? ''}
+            onChange={(e) => setSpoolPrice(parseNumericInput(e.target.value))}
             placeholder="110.00"
             required
+            error={
+              typeof spoolPrice === 'number' && spoolPrice < 0
+                ? 'Preço não pode ser negativo'
+                : undefined
+            }
           />
           <Input
             label="Peso Total Líquido *"
@@ -130,10 +147,15 @@ export const FilamentModal: React.FC<FilamentModalProps> = ({
             step="1"
             min="1"
             suffixText="g"
-            value={spoolWeightGrams || ''}
-            onChange={(e) => setSpoolWeightGrams(parseFloat(e.target.value) || 0)}
+            value={spoolWeightGrams ?? ''}
+            onChange={(e) => setSpoolWeightGrams(parseIntegerInput(e.target.value))}
             placeholder="1000"
             required
+            error={
+              typeof spoolWeightGrams === 'number' && spoolWeightGrams <= 0
+                ? 'Peso deve ser maior que 0g'
+                : undefined
+            }
           />
         </div>
 
@@ -142,15 +164,21 @@ export const FilamentModal: React.FC<FilamentModalProps> = ({
           <Input
             label="Margem de Perda Padrão"
             type="number"
-            step="1"
+            step="any"
             min="0"
             max="100"
             suffixText="%"
-            value={defaultLossMarginPercent}
+            value={defaultLossMarginPercent ?? ''}
             onChange={(e) =>
-              setDefaultLossMarginPercent(parseFloat(e.target.value) || 0)
+              setDefaultLossMarginPercent(parseNumericInput(e.target.value))
             }
             helperText="Padrão recomendado: 5%"
+            error={
+              typeof defaultLossMarginPercent === 'number' &&
+              (defaultLossMarginPercent < 0 || defaultLossMarginPercent > 100)
+                ? 'Margem deve estar entre 0% e 100%'
+                : undefined
+            }
           />
           <div>
             <label className="block text-xs font-medium text-slate-700 mb-1.5">

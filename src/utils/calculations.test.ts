@@ -111,4 +111,36 @@ describe('Cálculos do ForgeCalc3D', () => {
     // Preço Consumidor Final: 28.11875 * 5 = 140.59375
     expect(result.retailPrice).toBeCloseTo(140.59, 2);
   });
+
+  it('deve lidar com campos vazios (\'\') sem gerar NaN ou quebrar os cálculos', () => {
+    const emptyInput: CalculationInput = {
+      filamentId: '',
+      filamentWeightGrams: '',
+      lossMarginPercent: '',
+      manualSpoolPrice: '',
+      manualSpoolWeightGrams: '',
+      printerId: '',
+      printHours: '',
+      printMinutes: '',
+      manualPowerWatts: '',
+      manualEnergyRateKwh: '',
+      manualMaintenanceRatePerHour: '',
+      laborMinutes: '',
+      laborRatePerHour: '',
+      extraCosts: [],
+      resellerMultiplier: '',
+      retailMultiplier: '',
+    };
+
+    const result = computeCalculation(emptyInput);
+
+    expect(result.filamentCost).toBe(0);
+    expect(result.energyCost).toBe(0);
+    expect(result.laborCost).toBe(0);
+    expect(result.maintenanceCost).toBe(0);
+    expect(result.totalCost).toBe(0);
+    expect(result.resellerPrice).toBe(0);
+    expect(result.retailPrice).toBe(0);
+    expect(isNaN(result.totalCost)).toBe(false);
+  });
 });
