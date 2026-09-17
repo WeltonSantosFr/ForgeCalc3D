@@ -20,6 +20,58 @@
 /* Regras Globais e Safe Areas para Mobile */
 :root {
   color-scheme: light;
+
+  /* Safe Area Insets (suporte universal: iOS env() e Capacitor --safe-area-inset-*) */
+  --sat: max(var(--safe-area-inset-top, 0px), env(safe-area-inset-top, 0px));
+  --sab: max(var(--safe-area-inset-bottom, 0px), env(safe-area-inset-bottom, 0px));
+  --sal: max(var(--safe-area-inset-left, 0px), env(safe-area-inset-left, 0px));
+  --sar: max(var(--safe-area-inset-right, 0px), env(safe-area-inset-right, 0px));
+
+  --safe-area-top: var(--sat);
+  --safe-area-bottom: var(--sab);
+  --safe-area-left: var(--sal);
+  --safe-area-right: var(--sar);
+}
+
+/* Utilitários de Safe Area */
+.safe-area-pt {
+  padding-top: var(--safe-area-top);
+}
+.safe-area-pb {
+  padding-bottom: var(--safe-area-bottom);
+}
+.safe-area-pl {
+  padding-left: var(--safe-area-left);
+}
+.safe-area-pr {
+  padding-right: var(--safe-area-right);
+}
+.safe-area-px {
+  padding-left: var(--safe-area-left);
+  padding-right: var(--safe-area-right);
+}
+.safe-area-p {
+  padding-top: var(--safe-area-top);
+  padding-bottom: var(--safe-area-bottom);
+  padding-left: var(--safe-area-left);
+  padding-right: var(--safe-area-right);
+}
+
+.safe-area-mt {
+  margin-top: var(--safe-area-top);
+}
+.safe-area-mb {
+  margin-bottom: var(--safe-area-bottom);
+}
+
+/* Espaçamento inferior dinâmico do conteúdo principal para não ser encoberto pelo BottomNav */
+.main-content-padding {
+  padding-bottom: calc(5.5rem + var(--safe-area-bottom));
+}
+@media (min-width: 640px) {
+  .main-content-padding {
+    padding-bottom: 2.5rem;
+  }
 }
 
 body {
