@@ -76,13 +76,13 @@ export const SidebarDrawer: React.FC = () => {
 
       {/* Drawer Panel */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-72 sm:w-80 bg-white border-r border-slate-200 shadow-2xl flex flex-col transition-transform duration-300 ease-out transform ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-72 sm:w-80 bg-white border-r border-slate-200 shadow-2xl flex flex-col transition-transform duration-300 ease-out transform safe-area-pl ${
           isDrawerOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         aria-label="Menu principal"
       >
         {/* Header do Drawer */}
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+        <div className="p-4 safe-area-pt border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
           <div className="flex items-center gap-2.5">
             <img
               src="/logo.png"
@@ -148,7 +148,7 @@ export const SidebarDrawer: React.FC = () => {
         </nav>
 
         {/* Rodapé do Drawer */}
-        <div className="p-4 border-t border-slate-100 bg-slate-50/50">
+        <div className="p-4 safe-area-pb border-t border-slate-100 bg-slate-50/50">
           <div className="flex items-center gap-2 text-xs text-slate-500">
             <HardDrive className="w-4 h-4 text-[#065F46]" />
             <span>Dados gravados localmente (IndexedDB)</span>

@@ -6,8 +6,8 @@ export const Header: React.FC = () => {
   const { setDrawerOpen } = useCalculatorStore();
 
   return (
-    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
-      <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs safe-area-pt">
+      <div className="max-w-5xl mx-auto px-4 safe-area-px h-14 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setDrawerOpen(true)}

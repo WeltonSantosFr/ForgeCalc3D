@@ -29,7 +29,7 @@ export const App: React.FC = () => {
       <SidebarDrawer />
 
       {/* Área de Conteúdo Principal */}
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-5 sm:py-7 pb-24 sm:pb-10">
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 safe-area-px py-5 sm:py-7 main-content-padding">
         {activeTab === 'calculator' && <CalculatorView />}
         {activeTab === 'filaments' && <FilamentList />}
         {activeTab === 'printers' && <PrinterList />}
