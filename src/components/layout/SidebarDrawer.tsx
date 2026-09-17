@@ -6,7 +6,6 @@ import {
   History,
   Settings as SettingsIcon,
   X,
-  Flame,
   HardDrive,
 } from 'lucide-react';
 import { useCalculatorStore, type ActiveTab } from '../../store/useCalculatorStore';
@@ -85,9 +84,11 @@ export const SidebarDrawer: React.FC = () => {
         {/* Header do Drawer */}
         <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-[#065F46] flex items-center justify-center text-white shadow-sm">
-              <Flame className="w-5 h-5 text-emerald-300" />
-            </div>
+            <img
+              src="/logo.png"
+              alt="ForgeCalc3D"
+              className="w-9 h-9 rounded-xl object-contain shadow-sm border border-slate-200/80 shrink-0"
+            />
             <div>
               <h1 className="font-heading font-extrabold text-[18px] text-slate-900 leading-tight">
                 ForgeCalc<span className="text-[#065F46]">3D</span>
