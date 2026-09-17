@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, ShieldCheck, Flame } from 'lucide-react';
+import { Menu, ShieldCheck } from 'lucide-react';
 import { useCalculatorStore } from '../../store/useCalculatorStore';
 
 export const Header: React.FC = () => {
@@ -18,9 +18,11 @@ export const Header: React.FC = () => {
           </button>
 
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#065F46] flex items-center justify-center text-white shadow-xs">
-              <Flame className="w-5 h-5 text-emerald-300" />
-            </div>
+            <img
+              src="/logo.png"
+              alt="ForgeCalc3D"
+              className="w-8 h-8 rounded-lg object-contain shadow-xs border border-slate-200/80 shrink-0"
+            />
             <div>
               <span className="font-heading font-extrabold text-[17px] text-slate-900 tracking-tight block leading-tight">
                 ForgeCalc<span className="text-[#065F46]">3D</span>
