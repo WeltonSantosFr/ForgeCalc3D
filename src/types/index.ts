@@ -18,12 +18,15 @@ export interface Printer {
   createdAt: string;
 }
 
+export type ThemeMode = 'light' | 'dark' | 'system';
+
 export interface Settings {
   id: number; // Chave singleton = 1
   defaultLaborRatePerHour: number; // Valor padrão hora trabalho (ex: 30.00)
   defaultEnergyRateKwh: number; // Tarifa padrão de energia (ex: 0.85)
   resellerMultiplier: number; // Multiplicador padrão revenda (padrão: 3.0)
   retailMultiplier: number; // Multiplicador padrão consumidor final (padrão: 5.0)
+  theme?: ThemeMode; // Modo de tema visual (claro, escuro ou sistema)
   updatedAt: string;
 }
 

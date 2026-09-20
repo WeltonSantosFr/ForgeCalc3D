@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-heading: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -20,6 +22,13 @@
 /* Regras Globais e Safe Areas para Mobile */
 :root {
   color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+:root {
 
   /* Safe Area Insets (suporte universal: iOS env() e Capacitor --safe-area-inset-*) */
   --sat: max(var(--safe-area-inset-top, 0px), env(safe-area-inset-top, 0px));
@@ -84,6 +93,12 @@ body {
   font-weight: 400;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dark body {
+  background-color: #090D16;
+  color: #F1F5F9;
 }
 
 input, textarea, select {
@@ -109,4 +124,11 @@ h1, h2, h3, h4, .font-heading {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
 }

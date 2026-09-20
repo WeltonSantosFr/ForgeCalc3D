@@ -35,30 +35,30 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         {label && (
           <label
             htmlFor={selectId}
-            className="block text-xs font-medium text-slate-700 mb-1.5"
+            className="block text-xs font-medium text-slate-700 dark:text-slate-200 mb-1.5"
           >
             {label}
           </label>
         )}
-        <div className="relative rounded-lg border border-slate-200 bg-white transition-all focus-within:border-[#065F46] focus-within:ring-1 focus-within:ring-[#065F46] shadow-xs">
+        <div className="relative rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/90 transition-all focus-within:border-[#065F46] dark:focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-[#065F46] dark:focus-within:ring-emerald-500 shadow-xs">
           <select
             ref={ref}
             id={selectId}
-            className={`w-full px-3 py-2 text-[14px] font-normal text-slate-900 bg-transparent rounded-lg focus:outline-none appearance-none cursor-pointer pr-9 ${className}`}
+            className={`w-full px-3 py-2 text-[14px] font-normal text-slate-900 dark:text-white bg-transparent rounded-lg focus:outline-none appearance-none cursor-pointer pr-9 ${className}`}
             {...props}
           >
             {placeholder && (
-              <option value="" disabled>
+              <option value="" disabled className="dark:bg-slate-800 dark:text-slate-400">
                 {placeholder}
               </option>
             )}
             {options.map((opt) => (
-              <option key={opt.value} value={opt.value}>
+              <option key={opt.value} value={opt.value} className="dark:bg-slate-800 dark:text-white">
                 {opt.label} {opt.sublabel ? `(${opt.sublabel})` : ''}
               </option>
             ))}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 dark:text-slate-400">
             <svg
               className="h-4 w-4"
               xmlns="http://www.w3.org/2000/svg"
@@ -74,10 +74,10 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           </div>
         </div>
         {helperText && !error && (
-          <p className="mt-1 text-[11px] text-slate-500 font-normal">{helperText}</p>
+          <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400 font-normal">{helperText}</p>
         )}
         {error && (
-          <p className="mt-1 text-[11px] text-rose-600 font-medium">{error}</p>
+          <p className="mt-1 text-[11px] text-rose-600 dark:text-rose-400 font-medium">{error}</p>
         )}
       </div>
     );

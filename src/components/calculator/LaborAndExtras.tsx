@@ -34,8 +34,8 @@ export const LaborAndExtras: React.FC = () => {
       <div className="space-y-5">
         {/* Seção Mão de Obra */}
         <div>
-          <div className="flex items-center gap-1.5 mb-2 text-xs font-semibold text-slate-700">
-            <UserCheck className="w-4 h-4 text-[#065F46]" />
+          <div className="flex items-center gap-1.5 mb-2 text-xs font-semibold text-slate-700 dark:text-slate-200">
+            <UserCheck className="w-4 h-4 text-[#065F46] dark:text-emerald-400" />
             <span>Mão de Obra do Operador</span>
           </div>
 
@@ -82,24 +82,24 @@ export const LaborAndExtras: React.FC = () => {
           </div>
 
           <div className="mt-2 text-right">
-            <span className="text-xs text-slate-500">Custo calculado da mão de obra: </span>
-            <span className="text-xs font-bold text-slate-900">
+            <span className="text-xs text-slate-500 dark:text-slate-400">Custo calculado da mão de obra: </span>
+            <span className="text-xs font-bold text-slate-900 dark:text-white">
               {formatCurrency(laborCostCalculated)}
             </span>
           </div>
         </div>
 
-        <hr className="border-slate-100" />
+        <hr className="border-slate-100 dark:border-slate-800" />
 
         {/* Seção Insumos Extras */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700">
-              <PackagePlus className="w-4 h-4 text-[#065F46]" />
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200">
+              <PackagePlus className="w-4 h-4 text-[#065F46] dark:text-emerald-400" />
               <span>Insumos Adicionais & Embalagem</span>
             </div>
             {extrasTotal > 0 && (
-              <span className="text-xs font-bold text-[#065F46]">
+              <span className="text-xs font-bold text-[#065F46] dark:text-emerald-400">
                 Total: {formatCurrency(extrasTotal)}
               </span>
             )}
@@ -111,17 +111,17 @@ export const LaborAndExtras: React.FC = () => {
               {input.extraCosts.map((extra) => (
                 <div
                   key={extra.id}
-                  className="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs group"
+                  className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg text-xs group"
                 >
-                  <span className="font-medium text-slate-800">{extra.description}</span>
+                  <span className="font-medium text-slate-800 dark:text-slate-200">{extra.description}</span>
                   <div className="flex items-center gap-3">
-                    <span className="font-bold text-slate-900">
+                    <span className="font-bold text-slate-900 dark:text-white">
                       {formatCurrency(extra.cost)}
                     </span>
                     <button
                       type="button"
                       onClick={() => removeExtraCost(extra.id)}
-                      className="text-slate-400 hover:text-rose-600 p-1 rounded transition-colors"
+                      className="text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 p-1 rounded transition-colors"
                       title="Remover insumo"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -131,7 +131,7 @@ export const LaborAndExtras: React.FC = () => {
               ))}
             </div>
           ) : (
-            <p className="text-xs text-slate-400 italic mb-3">
+            <p className="text-xs text-slate-400 dark:text-slate-500 italic mb-3">
               Nenhum insumo extra adicionado (parafusos, insertos, ímãs, caixas, cola, etc.)
             </p>
           )}

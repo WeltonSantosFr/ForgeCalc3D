@@ -148,29 +148,29 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       inputMode || (isNumber ? (isInteger ? 'numeric' : 'decimal') : undefined);
 
     const borderStyle = error
-      ? 'border-rose-400 focus-within:border-rose-600 focus-within:ring-1 focus-within:ring-rose-500'
-      : 'border-slate-200 focus-within:border-[#065F46] focus-within:ring-1 focus-within:ring-[#065F46]';
+      ? 'border-rose-400 dark:border-rose-500/80 focus-within:border-rose-600 dark:focus-within:border-rose-400 focus-within:ring-1 focus-within:ring-rose-500'
+      : 'border-slate-200 dark:border-slate-700 focus-within:border-[#065F46] dark:focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-[#065F46] dark:focus-within:ring-emerald-500';
 
     return (
       <div className={`w-full ${containerClassName}`}>
         {label && (
           <label
             htmlFor={inputId}
-            className={`block text-xs font-medium text-slate-700 mb-1.5 leading-4 ${labelClassName}`}
+            className={`block text-xs font-medium text-slate-700 dark:text-slate-200 mb-1.5 leading-4 ${labelClassName}`}
           >
             {label}
           </label>
         )}
         <div
-          className={`relative flex items-center rounded-lg border bg-white transition-all shadow-xs ${borderStyle}`}
+          className={`relative flex items-center rounded-lg border bg-white dark:bg-slate-800/90 transition-all shadow-xs ${borderStyle}`}
         >
           {icon && (
-            <div className="pl-3 text-slate-400 flex items-center pointer-events-none">
+            <div className="pl-3 text-slate-400 dark:text-slate-400 flex items-center pointer-events-none">
               {icon}
             </div>
           )}
           {prefixText && (
-            <span className="pl-3 text-xs font-semibold text-slate-400 select-none">
+            <span className="pl-3 text-xs font-semibold text-slate-400 dark:text-slate-400 select-none">
               {prefixText}
             </span>
           )}
@@ -185,22 +185,22 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             onPaste={handlePaste}
             onFocus={handleFocus}
             onChange={handleChange}
-            className={`w-full px-3 py-2 text-[14px] font-normal text-slate-900 bg-transparent rounded-lg focus:outline-none placeholder:text-slate-400 disabled:bg-slate-50 disabled:text-slate-400 ${
+            className={`w-full px-3 py-2 text-[14px] font-normal text-slate-900 dark:text-white bg-transparent rounded-lg focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 disabled:bg-slate-50 dark:disabled:bg-slate-800/40 disabled:text-slate-400 dark:disabled:text-slate-500 ${
               prefixText ? 'pl-1.5' : ''
             } ${suffixText ? 'pr-1.5' : ''} ${className}`}
             {...props}
           />
           {suffixText && (
-            <span className="pr-3 text-xs font-medium text-slate-500 select-none">
+            <span className="pr-3 text-xs font-medium text-slate-500 dark:text-slate-400 select-none">
               {suffixText}
             </span>
           )}
         </div>
         {helperText && !error && (
-          <p className="mt-1 text-[11px] text-slate-500 font-normal">{helperText}</p>
+          <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400 font-normal">{helperText}</p>
         )}
         {error && (
-          <p className="mt-1 text-[11px] text-rose-600 font-medium">{error}</p>
+          <p className="mt-1 text-[11px] text-rose-600 dark:text-rose-400 font-medium">{error}</p>
         )}
       </div>
     );
