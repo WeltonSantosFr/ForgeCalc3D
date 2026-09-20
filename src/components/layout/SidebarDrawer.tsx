@@ -82,7 +82,7 @@ export const SidebarDrawer: React.FC = () => {
         aria-label="Menu principal"
       >
         {/* Header do Drawer */}
-        <div className="p-4 safe-area-pt border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+        <div className="px-4 pb-4 pt-[calc(1rem+var(--safe-area-top))] border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
           <div className="flex items-center gap-2.5">
             <img
               src="/logo.png"
@@ -148,7 +148,7 @@ export const SidebarDrawer: React.FC = () => {
         </nav>
 
         {/* Rodapé do Drawer */}
-        <div className="p-4 safe-area-pb border-t border-slate-100 bg-slate-50/50">
+        <div className="px-4 pt-4 pb-[calc(1rem+var(--safe-area-bottom))] border-t border-slate-100 bg-slate-50/50">
           <div className="flex items-center gap-2 text-xs text-slate-500">
             <HardDrive className="w-4 h-4 text-[#065F46]" />
             <span>Dados gravados localmente (IndexedDB)</span>
