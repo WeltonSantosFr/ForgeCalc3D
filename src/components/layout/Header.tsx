@@ -6,12 +6,12 @@ export const Header: React.FC = () => {
   const { setDrawerOpen } = useCalculatorStore();
 
   return (
-    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs safe-area-pt">
-      <div className="max-w-5xl mx-auto px-4 safe-area-px h-14 flex items-center justify-between">
+    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs safe-area-pt safe-area-pl safe-area-pr">
+      <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setDrawerOpen(true)}
-            className="p-2 -ml-2 rounded-lg text-slate-700 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 transition-colors focus:outline-none"
+            className="p-2 rounded-lg text-slate-700 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 transition-colors focus:outline-none"
             aria-label="Abrir menu de navegação"
           >
             <Menu className="w-5 h-5" />
