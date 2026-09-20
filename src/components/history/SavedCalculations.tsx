@@ -71,13 +71,13 @@ ${calc.notes ? `\n📝 Observações: ${calc.notes}` : ''}
   return (
     <div className="space-y-5 animate-in fade-in duration-200">
       {/* Cabeçalho */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-center sm:text-left">
         <div>
-          <h1 className="font-heading text-2xl font-extrabold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <History className="w-6 h-6 text-[#065F46] dark:text-emerald-400" />
-            Orçamentos Salvos
+          <h1 className="font-heading text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-slate-100 flex items-center justify-center sm:justify-start gap-2">
+            <History className="w-5 h-5 sm:w-6 sm:h-6 text-[#065F46] dark:text-emerald-400 shrink-0" />
+            <span>Orçamentos Salvos</span>
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xl mx-auto sm:mx-0">
             Consulte históricos, recarregue parâmetros na calculadora ou envie para clientes
           </p>
         </div>
@@ -85,7 +85,7 @@ ${calc.notes ? `\n📝 Observações: ${calc.notes}` : ''}
 
       {/* Busca */}
       {calculations.length > 0 && (
-        <div className="max-w-md">
+        <div className="max-w-md mx-auto sm:mx-0">
           <Input
             icon={<Search className="w-4 h-4" />}
             placeholder="Buscar por nome da peça ou notas..."

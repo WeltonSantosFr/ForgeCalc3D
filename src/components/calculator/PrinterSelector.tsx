@@ -37,7 +37,7 @@ export const PrinterSelector: React.FC = () => {
 
   return (
     <Card
-      title="2. Impressora & Tempo de Impressão"
+      title="2. Impressora e Tempo de Impressão"
       subtitle="Consumo de energia elétrica e depreciação da máquina"
       action={
         <button

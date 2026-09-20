@@ -57,7 +57,7 @@ export const SidebarDrawer: React.FC = () => {
     },
     {
       id: 'settings',
-      label: 'Configurações & Backup',
+      label: 'Configurações e Backup',
       description: 'Tarifas, margens e dados JSON',
       icon: <SettingsIcon className="w-5 h-5" />,
     },
@@ -94,7 +94,7 @@ export const SidebarDrawer: React.FC = () => {
                 ForgeCalc<span className="text-[#065F46] dark:text-emerald-400">3D</span>
               </h1>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                Calculadora & Precificação 3D
+                Calculadora e Precificação 3D
               </p>
             </div>
           </div>

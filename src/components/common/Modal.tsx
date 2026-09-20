@@ -38,7 +38,7 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 safe-area-p bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3.5 min-[360px]:p-4 sm:p-5 pl-[calc(0.875rem+var(--safe-area-left))] pr-[calc(0.875rem+var(--safe-area-right))] pt-[calc(0.875rem+var(--safe-area-top))] pb-[calc(0.875rem+var(--safe-area-bottom))] bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-200">
       <div
         className="fixed inset-0"
         onClick={onClose}
@@ -49,9 +49,9 @@ export const Modal: React.FC<ModalProps> = ({
         role="dialog"
         aria-modal="true"
       >
-        <div className="flex items-start justify-between p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50">
+        <div className="flex items-start justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50">
           <div>
-            <h2 className="font-heading text-[18px] font-bold text-slate-900 dark:text-white">
+            <h2 className="font-heading text-[17px] sm:text-[18px] font-bold text-slate-900 dark:text-white">
               {title}
             </h2>
             {subtitle && (
@@ -60,13 +60,13 @@ export const Modal: React.FC<ModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none"
+            className="text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none shrink-0"
             aria-label="Fechar modal"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
-        <div className="p-5 max-h-[80vh] overflow-y-auto">{children}</div>
+        <div className="p-4 sm:p-5 max-h-[80vh] overflow-y-auto">{children}</div>
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ export const Header: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-xs safe-area-pt safe-area-pl safe-area-pr transition-colors duration-200">
-      <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+      <div className="max-w-5xl mx-auto px-3.5 min-[360px]:px-4 sm:px-6 h-14 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setDrawerOpen(true)}

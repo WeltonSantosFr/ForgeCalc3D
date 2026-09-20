@@ -34,7 +34,7 @@ export const App: React.FC = () => {
       <SidebarDrawer />
 
       {/* Área de Conteúdo Principal */}
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 safe-area-px py-5 sm:py-7 main-content-padding">
+      <main className="flex-1 max-w-5xl w-full mx-auto py-5 sm:py-7 main-content-padding pl-[calc(0.875rem+var(--safe-area-left))] pr-[calc(0.875rem+var(--safe-area-right))] min-[360px]:pl-[calc(1rem+var(--safe-area-left))] min-[360px]:pr-[calc(1rem+var(--safe-area-right))] sm:pl-[calc(1.5rem+var(--safe-area-left))] sm:pr-[calc(1.5rem+var(--safe-area-right))]">
         {activeTab === 'calculator' && <CalculatorView />}
         {activeTab === 'filaments' && <FilamentList />}
         {activeTab === 'printers' && <PrinterList />}

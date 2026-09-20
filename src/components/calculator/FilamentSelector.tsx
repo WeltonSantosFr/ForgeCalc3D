@@ -41,7 +41,7 @@ export const FilamentSelector: React.FC = () => {
 
   return (
     <Card
-      title="1. Filamento & Material"
+      title="1. Filamento e Material"
       subtitle="Defina o carretel e a quantidade fatiada"
       action={
         <button

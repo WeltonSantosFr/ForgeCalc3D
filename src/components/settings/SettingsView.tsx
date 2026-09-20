@@ -133,19 +133,19 @@ export const SettingsView: React.FC = () => {
   return (
     <div className="space-y-6 max-w-3xl mx-auto animate-in fade-in duration-200">
       {/* Cabeçalho */}
-      <div>
-        <h1 className="font-heading text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-          <SettingsIcon className="w-6 h-6 text-[#065F46] dark:text-emerald-400" />
-          Configurações Globais & Backup
+      <div className="text-center sm:text-left">
+        <h1 className="font-heading text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center justify-center sm:justify-start gap-2">
+          <SettingsIcon className="w-5 h-5 sm:w-6 sm:h-6 text-[#065F46] dark:text-emerald-400 shrink-0" />
+          <span>Configurações Globais e Backup</span>
         </h1>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xl mx-auto sm:mx-0">
           Parâmetros financeiros padrão da sua operação, personalização visual e gerenciamento de backups locais
         </p>
       </div>
 
       {/* Seleção de Tema Visual */}
       <Card
-        title="Aparência & Tema"
+        title="Aparência e Tema"
         subtitle="Personalize o modo de visualização do aplicativo para o seu ambiente de trabalho"
       >
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -312,7 +312,7 @@ export const SettingsView: React.FC = () => {
 
       {/* Backup e Restauração Local */}
       <Card
-        title="Backup & Restauração Local (JSON)"
+        title="Backup e Restauração Local (JSON)"
         subtitle="Exporte ou importe seus cadastros de filamentos, impressoras e histórico"
       >
         <div className="space-y-4">
@@ -415,7 +415,7 @@ export const SettingsView: React.FC = () => {
             <p className="text-slate-500 dark:text-slate-400 leading-relaxed">
               Desenvolvido com foco em velocidade, autonomia e precisão para estúdios e operadores de impressão 3D FDM e Resina (MSLA).
             </p>
-            <div className="pt-2 flex items-center gap-4 text-[11px] text-slate-400 dark:text-slate-500">
+            <div className="pt-2 flex flex-wrap items-center gap-2 sm:gap-4 text-[11px] text-slate-400 dark:text-slate-500">
               <span className="flex items-center gap-1">
                 <HardDrive className="w-3.5 h-3.5 text-[#065F46] dark:text-emerald-400" />
                 Banco Local: Dexie.js (IndexedDB)

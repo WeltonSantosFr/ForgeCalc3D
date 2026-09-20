@@ -28,8 +28,8 @@ export const LaborAndExtras: React.FC = () => {
 
   return (
     <Card
-      title="3. Mão de Obra & Insumos Extras"
-      subtitle="Tempo do operador (setup/acabamento) e materiais adicionais"
+      title="3. Mão de Obra e Insumos Extras"
+      subtitle="Tempo do operador (setup e acabamento) e materiais adicionais"
     >
       <div className="space-y-5">
         {/* Seção Mão de Obra */}
@@ -96,7 +96,7 @@ export const LaborAndExtras: React.FC = () => {
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200">
               <PackagePlus className="w-4 h-4 text-[#065F46] dark:text-emerald-400" />
-              <span>Insumos Adicionais & Embalagem</span>
+              <span>Insumos Adicionais e Embalagem</span>
             </div>
             {extrasTotal > 0 && (
               <span className="text-xs font-bold text-[#065F46] dark:text-emerald-400">
