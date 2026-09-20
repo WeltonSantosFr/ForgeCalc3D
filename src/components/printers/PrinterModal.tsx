@@ -85,7 +85,7 @@ export const PrinterModal: React.FC<PrinterModalProps> = ({
         {/* Sugestões rápidas para novos cadastros */}
         {!printerToEdit && (
           <div>
-            <label className="block text-xs font-medium text-slate-500 mb-1.5">
+            <label className="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">
               Modelos comuns (preenchimento rápido):
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -94,7 +94,7 @@ export const PrinterModal: React.FC<PrinterModalProps> = ({
                   type="button"
                   key={p.name}
                   onClick={() => handleApplyPreset(p)}
-                  className="text-[11px] px-2.5 py-1 rounded-full bg-slate-100 hover:bg-emerald-50 hover:text-[#065F46] border border-slate-200 transition-colors"
+                  className="text-[11px] px-2.5 py-1 rounded-full bg-slate-100 hover:bg-emerald-50 hover:text-[#065F46] dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-emerald-950/40 dark:hover:text-emerald-400 border border-slate-200 transition-colors"
                 >
                   {p.name}
                 </button>
@@ -177,16 +177,16 @@ export const PrinterModal: React.FC<PrinterModalProps> = ({
           />
         </div>
 
-        <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-xl text-xs space-y-1 text-slate-600">
+        <div className="p-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-xl text-xs space-y-1 text-slate-600 dark:text-slate-400">
           <div className="flex justify-between">
             <span>Custo de energia por hora:</span>
-            <span className="font-semibold text-slate-900">
+            <span className="font-semibold text-slate-900 dark:text-slate-200">
               {formatCurrency((((Number(powerWatts) || 0) / 1000) * (Number(energyRateKwh) || 0)))}
             </span>
           </div>
           <div className="flex justify-between">
             <span>Custo total de máquina por hora:</span>
-            <span className="font-bold text-[#065F46]">
+            <span className="font-bold text-[#065F46] dark:text-emerald-400">
               {formatCurrency(
                 ((Number(powerWatts) || 0) / 1000) * (Number(energyRateKwh) || 0) +
                   (Number(maintenanceRatePerHour) || 0)

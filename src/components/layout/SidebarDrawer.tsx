@@ -68,7 +68,7 @@ export const SidebarDrawer: React.FC = () => {
       {/* Backdrop */}
       {isDrawerOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
+          className="fixed inset-0 z-40 bg-slate-950/70 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
           onClick={() => setDrawerOpen(false)}
           aria-hidden="true"
         />
@@ -76,31 +76,31 @@ export const SidebarDrawer: React.FC = () => {
 
       {/* Drawer Panel */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-72 sm:w-80 bg-white border-r border-slate-200 shadow-2xl flex flex-col transition-transform duration-300 ease-out transform safe-area-pl ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-72 sm:w-80 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col transition-transform duration-300 ease-out transform safe-area-pl ${
           isDrawerOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         aria-label="Menu principal"
       >
         {/* Header do Drawer */}
-        <div className="px-4 pb-4 pt-[calc(1rem+var(--safe-area-top))] border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+        <div className="px-4 pb-4 pt-[calc(1rem+var(--safe-area-top))] border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-800/50">
           <div className="flex items-center gap-2.5">
             <img
               src="/logo.png"
               alt="ForgeCalc3D"
-              className="w-9 h-9 rounded-xl object-contain shadow-sm border border-slate-200/80 shrink-0"
+              className="w-9 h-9 rounded-xl object-contain shadow-sm border border-slate-200/80 dark:border-slate-700 shrink-0"
             />
             <div>
-              <h1 className="font-heading font-extrabold text-[18px] text-slate-900 leading-tight">
-                ForgeCalc<span className="text-[#065F46]">3D</span>
+              <h1 className="font-heading font-extrabold text-[18px] text-slate-900 dark:text-white leading-tight">
+                ForgeCalc<span className="text-[#065F46] dark:text-emerald-400">3D</span>
               </h1>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 Calculadora & Precificação 3D
               </p>
             </div>
           </div>
           <button
             onClick={() => setDrawerOpen(false)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
             aria-label="Fechar menu"
           >
             <X className="w-5 h-5" />
@@ -117,15 +117,15 @@ export const SidebarDrawer: React.FC = () => {
                 onClick={() => setActiveTab(item.id)}
                 className={`w-full flex items-start gap-3 p-3 rounded-xl text-left transition-all ${
                   isActive
-                    ? 'bg-emerald-50 text-[#065F46] font-semibold shadow-2xs border border-emerald-200/70'
-                    : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900'
+                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-[#065F46] dark:text-emerald-300 font-semibold shadow-2xs border border-emerald-200/70 dark:border-emerald-800/60'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100/80 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <div
                   className={`p-2 rounded-lg shrink-0 mt-0.5 ${
                     isActive
-                      ? 'bg-[#065F46] text-white'
-                      : 'bg-slate-100 text-slate-500'
+                      ? 'bg-[#065F46] dark:bg-emerald-600 text-white'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
                   }`}
                 >
                   {item.icon}
@@ -136,7 +136,7 @@ export const SidebarDrawer: React.FC = () => {
                   </div>
                   <div
                     className={`text-xs mt-0.5 ${
-                      isActive ? 'text-emerald-700' : 'text-slate-400'
+                      isActive ? 'text-emerald-700 dark:text-emerald-300' : 'text-slate-400 dark:text-slate-500'
                     }`}
                   >
                     {item.description}
@@ -148,12 +148,12 @@ export const SidebarDrawer: React.FC = () => {
         </nav>
 
         {/* Rodapé do Drawer */}
-        <div className="px-4 pt-4 pb-[calc(1rem+var(--safe-area-bottom))] border-t border-slate-100 bg-slate-50/50">
-          <div className="flex items-center gap-2 text-xs text-slate-500">
-            <HardDrive className="w-4 h-4 text-[#065F46]" />
+        <div className="px-4 pt-4 pb-[calc(1rem+var(--safe-area-bottom))] border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            <HardDrive className="w-4 h-4 text-[#065F46] dark:text-emerald-400" />
             <span>Dados gravados localmente (IndexedDB)</span>
           </div>
-          <div className="mt-2 text-[11px] text-slate-400">
+          <div className="mt-2 text-[11px] text-slate-400 dark:text-slate-500">
             ForgeCalc3D v1.0 • Operação 100% Offline
           </div>
         </div>

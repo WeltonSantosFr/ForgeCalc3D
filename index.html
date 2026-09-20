@@ -6,15 +6,42 @@
     <link rel="apple-touch-icon" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#FFFFFF" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="description" content="ForgeCalc3D - Calculadora de Custos de Impressão 3D e Precificação 100% Offline" />
     <title>ForgeCalc3D - Calculadora de Impressão 3D</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <script>
+      (function() {
+        try {
+          const mode = localStorage.getItem('forgecalc3d_theme') || 'light';
+          const isDark = mode === 'dark' || (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.style.colorScheme = 'dark';
+            const meta = document.querySelector('meta[name="theme-color"]');
+            if (meta) meta.setAttribute('content', '#090D16');
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.style.colorScheme = 'light';
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <style>
+      html.dark body {
+        background-color: #090D16;
+        color: #F1F5F9;
+      }
+      html.dark #splash-container {
+        background-color: #090D16 !important;
+      }
+    </style>
   </head>
-  <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen selection:bg-emerald-100 selection:text-emerald-900">
+  <body class="bg-slate-50 dark:bg-[#090D16] text-slate-900 dark:text-slate-100 font-sans antialiased min-h-screen selection:bg-emerald-100 dark:selection:bg-emerald-950 selection:text-emerald-900 dark:selection:text-emerald-300">
     <div id="root">
-      <div style="min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #ffffff; padding: 24px;">
+      <div id="splash-container" style="min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #ffffff; padding: 24px;">
         <img
           src="/logo.png"
           alt="ForgeCalc3D"

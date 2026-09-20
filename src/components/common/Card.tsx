@@ -18,19 +18,19 @@ export const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <div
-      className={`bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5 transition-shadow ${className}`}
+      className={`bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-4 sm:p-5 transition-colors duration-200 ${className}`}
       {...props}
     >
       {(title || subtitle || action) && (
         <div className="flex items-start justify-between mb-4 gap-2">
           <div>
             {title && (
-              <h2 className="font-heading text-[18px] font-bold text-slate-900 tracking-tight">
+              <h2 className="font-heading text-[18px] font-bold text-slate-900 dark:text-white tracking-tight">
                 {title}
               </h2>
             )}
             {subtitle && (
-              <p className="text-slate-500 text-xs mt-0.5 font-normal">
+              <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 font-normal">
                 {subtitle}
               </p>
             )}

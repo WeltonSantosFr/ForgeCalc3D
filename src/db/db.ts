@@ -27,6 +27,7 @@ export const DEFAULT_SETTINGS: Settings = {
   defaultEnergyRateKwh: 0.85,
   resellerMultiplier: 3.0,
   retailMultiplier: 5.0,
+  theme: 'light',
   updatedAt: new Date().toISOString(),
 };
 

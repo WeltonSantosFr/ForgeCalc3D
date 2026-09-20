@@ -42,7 +42,7 @@ export const PrinterSelector: React.FC = () => {
       action={
         <button
           onClick={() => setActiveTab('printers')}
-          className="text-xs font-semibold text-[#065F46] hover:text-[#047857] inline-flex items-center gap-1 hover:underline"
+          className="text-xs font-semibold text-[#065F46] dark:text-emerald-400 hover:text-[#047857] dark:hover:text-emerald-300 inline-flex items-center gap-1 hover:underline"
         >
           <Plus className="w-3.5 h-3.5" />
           Gerenciar
@@ -67,15 +67,15 @@ export const PrinterSelector: React.FC = () => {
             />
           </div>
         ) : (
-          <div className="p-3 bg-amber-50/80 border border-amber-200/80 rounded-xl flex items-start gap-2.5 text-xs text-amber-900">
-            <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+          <div className="p-3 bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-900/50 rounded-xl flex items-start gap-2.5 text-xs text-amber-900 dark:text-amber-200">
+            <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
             <div className="flex-1">
               <span className="font-semibold">Nenhuma impressora cadastrada.</span>
-              <p className="mt-0.5 text-amber-700">
+              <p className="mt-0.5 text-amber-700 dark:text-amber-300">
                 Usando parâmetros manuais ou{' '}
                 <button
                   onClick={() => setActiveTab('printers')}
-                  className="font-bold underline hover:text-amber-950"
+                  className="font-bold underline hover:text-amber-950 dark:hover:text-amber-100"
                 >
                   cadastre suas impressoras
                 </button>{' '}
@@ -87,7 +87,7 @@ export const PrinterSelector: React.FC = () => {
 
         {/* Campos manuais se não selecionou do banco */}
         {!selectedPrinter && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200/80">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200/80 dark:border-slate-700">
             <Input
               label="Consumo Médio"
               type="number"
@@ -191,21 +191,21 @@ export const PrinterSelector: React.FC = () => {
 
         {/* Resumo do Tempo e Consumo */}
         <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
-            <span className="text-slate-500 flex items-center gap-1 font-medium">
-              <Clock className="w-3.5 h-3.5 text-slate-400" />
+          <div className="p-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg flex items-center justify-between">
+            <span className="text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium">
+              <Clock className="w-3.5 h-3.5 text-slate-400 dark:text-slate-400" />
               Tempo total:
             </span>
-            <span className="font-semibold text-slate-800">
+            <span className="font-semibold text-slate-800 dark:text-slate-200">
               {formatNumber(decimalHours, 2)} h
             </span>
           </div>
-          <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
-            <span className="text-slate-500 flex items-center gap-1 font-medium">
+          <div className="p-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg flex items-center justify-between">
+            <span className="text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium">
               <Zap className="w-3.5 h-3.5 text-amber-500" />
               Consumo est.:
             </span>
-            <span className="font-semibold text-slate-800">
+            <span className="font-semibold text-slate-800 dark:text-slate-200">
               {formatNumber(estimatedKwh, 3)} kWh
             </span>
           </div>

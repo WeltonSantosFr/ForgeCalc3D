@@ -96,7 +96,7 @@ export const FilamentModal: React.FC<FilamentModalProps> = ({
 
         {/* Tipo de Material com chips rápidos */}
         <div>
-          <label className="block text-xs font-medium text-slate-700 mb-1.5">
+          <label className="block text-xs font-medium text-slate-700 dark:text-slate-200 mb-1.5">
             Tipo de Material *
           </label>
           <div className="flex flex-wrap gap-1.5 mb-2">
@@ -107,8 +107,8 @@ export const FilamentModal: React.FC<FilamentModalProps> = ({
                 onClick={() => setMaterial(m)}
                 className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
                   material.toUpperCase() === m
-                    ? 'bg-[#065F46] text-white border-[#065F46] font-semibold'
-                    : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                    ? 'bg-[#065F46] dark:bg-emerald-600 text-white border-[#065F46] dark:border-emerald-600 font-semibold'
+                    : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
                 }`}
               >
                 {m}
@@ -184,17 +184,17 @@ export const FilamentModal: React.FC<FilamentModalProps> = ({
             }
           />
           <div>
-            <label className="block text-xs font-medium text-slate-700 mb-1.5 leading-4 min-h-[2rem] sm:min-h-0">
+            <label className="block text-xs font-medium text-slate-700 dark:text-slate-200 mb-1.5 leading-4 min-h-[2rem] sm:min-h-0">
               Cor de Referência
             </label>
-            <div className="flex items-center gap-2 h-10 px-3 rounded-lg border border-slate-200 bg-white">
+            <div className="flex items-center gap-2 h-10 px-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/90">
               <input
                 type="color"
                 value={colorHex}
                 onChange={(e) => setColorHex(e.target.value)}
                 className="w-7 h-7 rounded border-none cursor-pointer bg-transparent"
               />
-              <span className="text-xs text-slate-600 uppercase font-mono">
+              <span className="text-xs text-slate-600 dark:text-slate-300 uppercase font-mono">
                 {colorHex}
               </span>
             </div>
@@ -202,9 +202,9 @@ export const FilamentModal: React.FC<FilamentModalProps> = ({
         </div>
 
         {/* Custo Calculado por Grama */}
-        <div className="p-3 bg-emerald-50/70 border border-emerald-100 rounded-xl flex items-center justify-between text-xs">
-          <span className="text-slate-600 font-medium">Custo por grama estimado:</span>
-          <span className="font-bold text-[#065F46] text-sm">
+        <div className="p-3 bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-800/60 rounded-xl flex items-center justify-between text-xs">
+          <span className="text-slate-600 dark:text-slate-300 font-medium">Custo por grama estimado:</span>
+          <span className="font-bold text-[#065F46] dark:text-emerald-400 text-sm">
             {formatCurrency(costPerGram)}/g
           </span>
         </div>

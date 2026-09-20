@@ -14,7 +14,7 @@ export const BottomNav: React.FC = () => {
   ];
 
   return (
-    <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-slate-200 safe-area-pb shadow-lg">
+    <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 safe-area-pb shadow-lg transition-colors duration-200">
       <div className="flex items-center justify-around h-14 px-1 safe-area-px">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
@@ -23,7 +23,9 @@ export const BottomNav: React.FC = () => {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
-                isActive ? 'text-[#065F46]' : 'text-slate-500 hover:text-slate-800'
+                isActive
+                  ? 'text-[#065F46] dark:text-emerald-400'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
               }`}
             >
               <div
