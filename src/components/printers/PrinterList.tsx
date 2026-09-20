@@ -12,6 +12,7 @@ import {
 import { db } from '../../db/db';
 import type { Printer } from '../../types';
 import { useCalculatorStore } from '../../store/useCalculatorStore';
+import { useTranslation } from '../../i18n';
 import { Button } from '../common/Button';
 import { PrinterModal } from './PrinterModal';
 import { formatCurrency } from '../../utils/formatters';
@@ -19,6 +20,7 @@ import { formatCurrency } from '../../utils/formatters';
 export const PrinterList: React.FC = () => {
   const printers = useLiveQuery(() => db.printers.toArray()) || [];
   const { setInput, setActiveTab } = useCalculatorStore();
+  const { t, language } = useTranslation();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [printerToEdit, setPrinterToEdit] = useState<Printer | null>(null);
@@ -29,7 +31,7 @@ export const PrinterList: React.FC = () => {
   };
 
   const handleDelete = async (id: string, name: string) => {
-    if (window.confirm(`Deseja realmente excluir a impressora "${name}"?`)) {
+    if (window.confirm(t('printers.deleteConfirmDesc', { name }))) {
       await db.printers.delete(id);
     }
   };
@@ -48,10 +50,10 @@ export const PrinterList: React.FC = () => {
         <div>
           <h1 className="font-heading text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center justify-center sm:justify-start gap-2">
             <PrinterIcon className="w-5 h-5 sm:w-6 sm:h-6 text-[#065F46] dark:text-emerald-400 shrink-0" />
-            <span>Gestão de Impressoras 3D</span>
+            <span>{t('printers.title')}</span>
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xl mx-auto sm:mx-0">
-            Cadastre suas máquinas e configure potência média e reservas de manutenção
+            {t('printers.subtitle')}
           </p>
         </div>
         <Button
@@ -63,7 +65,7 @@ export const PrinterList: React.FC = () => {
             setIsModalOpen(true);
           }}
         >
-          Nova Impressora
+          {t('printers.newPrinter')}
         </Button>
       </div>
 
@@ -87,15 +89,15 @@ export const PrinterList: React.FC = () => {
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => handleEdit(p)}
-                        className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                        title="Editar"
+                        className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                        title={t('common.edit')}
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleDelete(p.id, p.name)}
-                        className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors"
-                        title="Excluir"
+                        className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors cursor-pointer"
+                        title={t('common.delete')}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -110,7 +112,7 @@ export const PrinterList: React.FC = () => {
                     <div className="flex justify-between items-center">
                       <span className="text-slate-500 dark:text-slate-400 flex items-center gap-1">
                         <Zap className="w-3.5 h-3.5 text-amber-500" />
-                        Potência:
+                        {language === 'pt' ? 'Potência' : 'Power'}:
                       </span>
                       <span className="font-semibold text-slate-900 dark:text-white">
                         {p.powerWatts} W
@@ -118,28 +120,28 @@ export const PrinterList: React.FC = () => {
                     </div>
 
                     <div className="flex justify-between items-center">
-                      <span className="text-slate-500 dark:text-slate-400">Tarifa de Energia:</span>
+                      <span className="text-slate-500 dark:text-slate-400">{t('printers.energyRate')}:</span>
                       <span className="font-semibold text-slate-900 dark:text-white">
-                        {formatCurrency(p.energyRateKwh)}/kWh
+                        {formatCurrency(p.energyRateKwh, language)}/kWh
                       </span>
                     </div>
 
                     <div className="flex justify-between items-center">
                       <span className="text-slate-500 dark:text-slate-400 flex items-center gap-1">
                         <Wrench className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
-                        Desgaste / Hora:
+                        {language === 'pt' ? 'Desgaste / Hora' : 'Wear / Hour'}:
                       </span>
                       <span className="font-semibold text-slate-900 dark:text-white">
-                        {formatCurrency(p.maintenanceRatePerHour)}/h
+                        {formatCurrency(p.maintenanceRatePerHour, language)}/h
                       </span>
                     </div>
 
                     <div className="flex justify-between pt-1 border-t border-slate-200/60 dark:border-slate-700">
                       <span className="font-semibold text-[#065F46] dark:text-emerald-400">
-                        Custo Máquina / Hora:
+                        {language === 'pt' ? 'Custo Máquina / Hora:' : 'Machine Cost / Hour:'}
                       </span>
                       <span className="font-extrabold text-[#065F46] dark:text-emerald-400 text-sm">
-                        {formatCurrency(totalMachineHourCost)}/h
+                        {formatCurrency(totalMachineHourCost, language)}/h
                       </span>
                     </div>
                   </div>
@@ -152,7 +154,7 @@ export const PrinterList: React.FC = () => {
                   icon={<Calculator className="w-3.5 h-3.5" />}
                   onClick={() => handleUseInCalculator(p)}
                 >
-                  Usar na Calculadora
+                  {t('calc.useInCalculator')}
                 </Button>
               </div>
             );
@@ -165,10 +167,10 @@ export const PrinterList: React.FC = () => {
             <PrinterIcon className="w-6 h-6" />
           </div>
           <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-white mb-1">
-            Nenhuma impressora cadastrada ainda
+            {t('printers.empty')}
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-5">
-            Cadastre suas impressoras 3D para salvar potência em Watts e custo de manutenção/hora e carregar automaticamente no cálculo.
+            {t('printers.emptyDesc')}
           </p>
           <Button
             variant="primary"
@@ -178,7 +180,7 @@ export const PrinterList: React.FC = () => {
               setIsModalOpen(true);
             }}
           >
-            Cadastrar Primeira Impressora
+            {language === 'pt' ? 'Cadastrar Primeira Impressora' : 'Register First Printer'}
           </Button>
         </div>
       )}

@@ -12,16 +12,19 @@ import {
   Sun,
   Moon,
   Laptop,
+  Globe,
 } from 'lucide-react';
 import { db, DEFAULT_SETTINGS } from '../../db/db';
 import { exportDatabaseToJson, importDatabaseFromJson, type ImportSummary } from '../../db/backup';
-import type { Settings, ThemeMode } from '../../types';
+import type { Settings, ThemeMode, LanguageMode } from '../../types';
 import { useCalculatorStore } from '../../store/useCalculatorStore';
 import { useThemeStore } from '../../store/useThemeStore';
+import { useTranslation } from '../../i18n';
 import { parseNumericInput } from '../../utils/inputs';
 import { Card } from '../common/Card';
 import { Input } from '../common/Input';
 import { Button } from '../common/Button';
+import { Select } from '../common/Select';
 
 type SettingsFormState = {
   id: number;
@@ -36,6 +39,7 @@ export const SettingsView: React.FC = () => {
   const currentSettings = useLiveQuery(() => db.settings.get(1));
   const { applySettingsDefaults } = useCalculatorStore();
   const { themeMode, setTheme } = useThemeStore();
+  const { t, language, languageMode, setLanguageMode } = useTranslation();
 
   const [formData, setFormData] = useState<SettingsFormState>(DEFAULT_SETTINGS);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -74,10 +78,10 @@ export const SettingsView: React.FC = () => {
   const handleExport = async () => {
     try {
       const fileName = await exportDatabaseToJson();
-      setExportSuccess(`Backup exportado com sucesso: ${fileName}`);
+      setExportSuccess(t('settings.exportSuccess', { fileName }));
       setTimeout(() => setExportSuccess(null), 4000);
     } catch {
-      alert('Erro ao exportar backup.');
+      alert(t('settings.exportError'));
     }
   };
 
@@ -97,7 +101,7 @@ export const SettingsView: React.FC = () => {
         fileInputRef.current.value = '';
       }
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Falha ao importar o arquivo.';
+      const message = err instanceof Error ? err.message : t('settings.importError');
       setImportError(message);
     } finally {
       setIsImporting(false);
@@ -112,20 +116,20 @@ export const SettingsView: React.FC = () => {
   }[] = [
     {
       id: 'light',
-      label: 'Modo Claro',
-      description: 'Visual tradicional, alto contraste e fundo claro',
+      label: t('settings.themeLight'),
+      description: t('settings.themeLightDesc'),
       icon: <Sun className="w-5 h-5" />,
     },
     {
       id: 'dark',
-      label: 'Modo Escuro',
-      description: 'Confortável para os olhos e ideal para baixa iluminação',
+      label: t('settings.themeDark'),
+      description: t('settings.themeDarkDesc'),
       icon: <Moon className="w-5 h-5" />,
     },
     {
       id: 'system',
-      label: 'Automático',
-      description: 'Sincroniza dinamicamente com o tema do seu dispositivo',
+      label: t('settings.themeSystem'),
+      description: t('settings.themeSystemDesc'),
       icon: <Laptop className="w-5 h-5" />,
     },
   ];
@@ -136,17 +140,60 @@ export const SettingsView: React.FC = () => {
       <div className="text-center sm:text-left">
         <h1 className="font-heading text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center justify-center sm:justify-start gap-2">
           <SettingsIcon className="w-5 h-5 sm:w-6 sm:h-6 text-[#065F46] dark:text-emerald-400 shrink-0" />
-          <span>Configurações Globais e Backup</span>
+          <span>{t('settings.title')}</span>
         </h1>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xl mx-auto sm:mx-0">
-          Parâmetros financeiros padrão da sua operação, personalização visual e gerenciamento de backups locais
+          {t('settings.subtitle')}
         </p>
       </div>
 
+      {/* Seção de Seleção de Idioma */}
+      <Card
+        title={t('settings.languageTitle')}
+        subtitle={t('settings.languageSubtitle')}
+      >
+        <div className="max-w-md space-y-3">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
+            <div className="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-[#065F46] dark:text-emerald-400 shrink-0">
+              <Globe className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="font-heading font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                <span>
+                  {languageMode === 'system'
+                    ? `${t('settings.themeSystem')} (${language === 'pt' ? 'Português' : 'English'})`
+                    : languageMode === 'pt'
+                    ? 'Português'
+                    : 'English'}
+                </span>
+                <span className="text-[11px] font-semibold text-[#065F46] dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 rounded-full">
+                  {t('common.active')}
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                {t('settings.languageHelperText')}
+              </p>
+            </div>
+          </div>
+
+          <Select
+            id="settings-language-select"
+            label={t('settings.languageSelectLabel')}
+            value={languageMode}
+            onChange={(e) => setLanguageMode(e.target.value as LanguageMode)}
+            options={[
+              { value: 'system', label: t('common.langAuto') },
+              { value: 'pt', label: 'Português' },
+              { value: 'en', label: 'English' },
+            ]}
+          />
+        </div>
+      </Card>
+
       {/* Seleção de Tema Visual */}
       <Card
-        title="Aparência e Tema"
-        subtitle="Personalize o modo de visualização do aplicativo para o seu ambiente de trabalho"
+        title={t('settings.themeTitle')}
+        subtitle={t('settings.themeSubtitle')}
       >
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {themeOptions.map((opt) => {
@@ -175,7 +222,7 @@ export const SettingsView: React.FC = () => {
                   {isSelected && (
                     <span className="flex items-center gap-1 text-[11px] font-bold text-[#065F46] dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/60 px-2 py-0.5 rounded-full">
                       <Check className="w-3 h-3" />
-                      Ativo
+                      {t('common.active')}
                     </span>
                   )}
                 </div>
@@ -193,17 +240,17 @@ export const SettingsView: React.FC = () => {
 
       {/* Formulário de Configurações Financeiras */}
       <Card
-        title="Parâmetros Financeiros Padrão"
-        subtitle="Valores utilizados como sugestão ao iniciar novos cálculos"
+        title={t('settings.financialTitle')}
+        subtitle={t('settings.financialSubtitle')}
       >
         <form noValidate onSubmit={handleSaveSettings} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
-              label="Tarifa Padrão de Energia Elétrica (R$/kWh)"
+              label={`${t('settings.defaultEnergyRate')} (${t('common.currencyPerKwh')})`}
               type="number"
               step="any"
               min="0"
-              prefixText="R$"
+              prefixText={t('common.currencyPrefix')}
               suffixText="/kWh"
               value={formData.defaultEnergyRateKwh ?? ''}
               onChange={(e) =>
@@ -212,21 +259,21 @@ export const SettingsView: React.FC = () => {
                   defaultEnergyRateKwh: parseNumericInput(e.target.value),
                 })
               }
-              helperText="Padrão inicial: R$ 0,85/kWh"
+              helperText={t('settings.defaultEnergyRateHelper')}
               required
               error={
                 typeof formData.defaultEnergyRateKwh === 'number' && formData.defaultEnergyRateKwh < 0
-                  ? 'Tarifa não pode ser negativa'
+                  ? t('settings.energyRateNegative')
                   : undefined
               }
             />
 
             <Input
-              label="Valor Padrão da Hora de Trabalho (R$/h)"
+              label={`${t('settings.defaultLaborRate')} (${t('common.currencyPerHour')})`}
               type="number"
               step="any"
               min="0"
-              prefixText="R$"
+              prefixText={t('common.currencyPrefix')}
               suffixText="/h"
               value={formData.defaultLaborRatePerHour ?? ''}
               onChange={(e) =>
@@ -235,11 +282,11 @@ export const SettingsView: React.FC = () => {
                   defaultLaborRatePerHour: parseNumericInput(e.target.value),
                 })
               }
-              helperText="Padrão inicial: R$ 30,00/h"
+              helperText={t('settings.defaultLaborRateHelper')}
               required
               error={
                 typeof formData.defaultLaborRatePerHour === 'number' && formData.defaultLaborRatePerHour < 0
-                  ? 'Valor da hora não pode ser negativo'
+                  ? t('settings.laborRateNegative')
                   : undefined
               }
             />
@@ -247,7 +294,7 @@ export const SettingsView: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
-              label="Multiplicador Padrão de Revenda (Atacado)"
+              label={t('settings.resellerMultiplier')}
               type="number"
               step="any"
               min="1"
@@ -259,17 +306,17 @@ export const SettingsView: React.FC = () => {
                   resellerMultiplier: parseNumericInput(e.target.value),
                 })
               }
-              helperText="Padrão da especificação: 3.0x"
+              helperText={t('settings.resellerMultiplierHelper')}
               required
               error={
                 typeof formData.resellerMultiplier === 'number' && formData.resellerMultiplier < 1
-                  ? 'Mínimo de 1.0x'
+                  ? t('settings.multiplierMin')
                   : undefined
               }
             />
 
             <Input
-              label="Multiplicador Padrão para Consumidor Final (Varejo)"
+              label={t('settings.retailMultiplier')}
               type="number"
               step="any"
               min="1"
@@ -281,11 +328,11 @@ export const SettingsView: React.FC = () => {
                   retailMultiplier: parseNumericInput(e.target.value),
                 })
               }
-              helperText="Padrão da especificação: 5.0x"
+              helperText={t('settings.retailMultiplierHelper')}
               required
               error={
                 typeof formData.retailMultiplier === 'number' && formData.retailMultiplier < 1
-                  ? 'Mínimo de 1.0x'
+                  ? t('settings.multiplierMin')
                   : undefined
               }
             />
@@ -294,7 +341,7 @@ export const SettingsView: React.FC = () => {
           {saveSuccess && (
             <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-lg flex items-center gap-2 text-xs font-semibold text-[#065F46] dark:text-emerald-300 animate-in fade-in">
               <Check className="w-4 h-4" />
-              Configurações salvas com sucesso!
+              {t('settings.savedSuccess')}
             </div>
           )}
 
@@ -304,7 +351,7 @@ export const SettingsView: React.FC = () => {
               variant="primary"
               icon={<Save className="w-4 h-4" />}
             >
-              Salvar Configurações
+              {t('settings.saveSettings')}
             </Button>
           </div>
         </form>
@@ -312,12 +359,12 @@ export const SettingsView: React.FC = () => {
 
       {/* Backup e Restauração Local */}
       <Card
-        title="Backup e Restauração Local (JSON)"
-        subtitle="Exporte ou importe seus cadastros de filamentos, impressoras e histórico"
+        title={t('settings.backupTitle')}
+        subtitle={t('settings.backupSubtitle')}
       >
         <div className="space-y-4">
           <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-            Como o <strong>ForgeCalc3D opera 100% offline</strong> sem depender de servidores na nuvem, você pode gerar backups manuais para migrar dados entre celulares, tablets ou navegadores.
+            {t('settings.backupDesc')}
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
@@ -325,10 +372,10 @@ export const SettingsView: React.FC = () => {
             <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl flex flex-col justify-between">
               <div>
                 <h3 className="font-heading font-bold text-sm text-slate-900 dark:text-white mb-1">
-                  Exportar Dados
+                  {t('settings.exportTitle')}
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
-                  Gera um arquivo .json seguro contendo todos os cadastros e orçamentos.
+                  {t('settings.exportDesc')}
                 </p>
               </div>
               <Button
@@ -337,7 +384,7 @@ export const SettingsView: React.FC = () => {
                 icon={<Download className="w-4 h-4" />}
                 fullWidth
               >
-                Baixar Arquivo JSON
+                {t('settings.exportButton')}
               </Button>
             </div>
 
@@ -345,10 +392,10 @@ export const SettingsView: React.FC = () => {
             <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl flex flex-col justify-between">
               <div>
                 <h3 className="font-heading font-bold text-sm text-slate-900 dark:text-white mb-1">
-                  Importar Dados
+                  {t('settings.importTitle')}
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
-                  Selecione um arquivo de backup (.json) para restaurar no aplicativo.
+                  {t('settings.importDesc')}
                 </p>
               </div>
 
@@ -367,7 +414,7 @@ export const SettingsView: React.FC = () => {
                 icon={<Upload className="w-4 h-4" />}
                 fullWidth
               >
-                {isImporting ? 'Importando...' : 'Selecionar Arquivo JSON'}
+                {isImporting ? t('settings.importing') : t('settings.importButton')}
               </Button>
             </div>
           </div>
@@ -383,12 +430,12 @@ export const SettingsView: React.FC = () => {
             <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-xl text-xs text-[#065F46] dark:text-emerald-300 space-y-1 animate-in fade-in">
               <div className="flex items-center gap-2 font-bold">
                 <Check className="w-4 h-4" />
-                Dados importados com sucesso!
+                {t('settings.importSuccessTitle')}
               </div>
               <div className="text-[11px] text-emerald-800 dark:text-emerald-300/80 pl-6 space-y-0.5">
-                <p>• {importSummary.filamentsCount} filamentos processados</p>
-                <p>• {importSummary.printersCount} impressoras processadas</p>
-                <p>• {importSummary.calculationsCount} orçamentos recuperados</p>
+                <p>{t('settings.filamentsProcessed', { count: importSummary.filamentsCount })}</p>
+                <p>{t('settings.printersProcessed', { count: importSummary.printersCount })}</p>
+                <p>{t('settings.calculationsRecovered', { count: importSummary.calculationsCount })}</p>
               </div>
             </div>
           )}
@@ -410,18 +457,18 @@ export const SettingsView: React.FC = () => {
           </div>
           <div className="space-y-1 text-xs">
             <div className="font-bold text-slate-900 dark:text-white text-sm">
-              ForgeCalc3D — Utilitário de Custos 3D
+              {t('settings.aboutTitle')}
             </div>
             <p className="text-slate-500 dark:text-slate-400 leading-relaxed">
-              Desenvolvido com foco em velocidade, autonomia e precisão para estúdios e operadores de impressão 3D FDM e Resina (MSLA).
+              {t('settings.aboutDesc')}
             </p>
             <div className="pt-2 flex flex-wrap items-center gap-2 sm:gap-4 text-[11px] text-slate-400 dark:text-slate-500">
               <span className="flex items-center gap-1">
                 <HardDrive className="w-3.5 h-3.5 text-[#065F46] dark:text-emerald-400" />
-                Banco Local: Dexie.js (IndexedDB)
+                {t('settings.localDbBadge')}
               </span>
               <span>•</span>
-              <span>Versão 1.0.0</span>
+              <span>{t('settings.versionBadge')}</span>
             </div>
           </div>
         </div>

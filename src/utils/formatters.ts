@@ -1,11 +1,23 @@
+import { useLanguageStore } from '../store/useLanguageStore';
+import type { Language } from '../types';
+
+function getLocale(language?: Language): string {
+  const lang = language ?? useLanguageStore.getState().language;
+  return lang === 'en' ? 'en-US' : 'pt-BR';
+}
+
 /**
- * Formata um número para Real Brasileiro (BRL)
+ * Formata um número para a moeda correspondente ao idioma (BRL para pt, USD para en)
  */
-export function formatCurrency(value: number): string {
-  if (isNaN(value)) return 'R$ 0,00';
-  return new Intl.NumberFormat('pt-BR', {
+export function formatCurrency(value: number, language?: Language): string {
+  const lang = language ?? useLanguageStore.getState().language;
+  if (isNaN(value)) {
+    return lang === 'en' ? '$ 0.00' : 'R$ 0,00';
+  }
+
+  return new Intl.NumberFormat(getLocale(lang), {
     style: 'currency',
-    currency: 'BRL',
+    currency: lang === 'en' ? 'USD' : 'BRL',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(value);
@@ -14,9 +26,9 @@ export function formatCurrency(value: number): string {
 /**
  * Formata um número de gramas
  */
-export function formatGrams(grams: number): string {
+export function formatGrams(grams: number, language?: Language): string {
   if (isNaN(grams)) return '0 g';
-  return `${grams.toLocaleString('pt-BR', { maximumFractionDigits: 1 })} g`;
+  return `${grams.toLocaleString(getLocale(language), { maximumFractionDigits: 1 })} g`;
 }
 
 /**
@@ -34,17 +46,17 @@ export function formatTime(hours: number, minutes: number): string {
 /**
  * Formata porcentagem
  */
-export function formatPercent(value: number): string {
+export function formatPercent(value: number, language?: Language): string {
   if (isNaN(value)) return '0%';
-  return `${value.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%`;
+  return `${value.toLocaleString(getLocale(language), { maximumFractionDigits: 1 })}%`;
 }
 
 /**
- * Formata número com 2 casas decimais
+ * Formata número com casas decimais de acordo com o idioma
  */
-export function formatNumber(value: number, decimals: number = 2): string {
+export function formatNumber(value: number, decimals: number = 2, language?: Language): string {
   if (isNaN(value)) return '0';
-  return value.toLocaleString('pt-BR', {
+  return value.toLocaleString(getLocale(language), {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   });

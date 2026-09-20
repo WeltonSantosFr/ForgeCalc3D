@@ -1,16 +1,18 @@
 import React from 'react';
 import { Calculator, Layers, Printer, History, Settings } from 'lucide-react';
 import { useCalculatorStore, type ActiveTab } from '../../store/useCalculatorStore';
+import { useTranslation } from '../../i18n';
 
 export const BottomNav: React.FC = () => {
   const { activeTab, setActiveTab } = useCalculatorStore();
+  const { t } = useTranslation();
 
   const tabs: { id: ActiveTab; label: string; icon: React.ReactNode }[] = [
-    { id: 'calculator', label: 'Cálculo', icon: <Calculator className="w-5 h-5" /> },
-    { id: 'filaments', label: 'Filamentos', icon: <Layers className="w-5 h-5" /> },
-    { id: 'printers', label: 'Máquinas', icon: <Printer className="w-5 h-5" /> },
-    { id: 'history', label: 'Salvos', icon: <History className="w-5 h-5" /> },
-    { id: 'settings', label: 'Ajustes', icon: <Settings className="w-5 h-5" /> },
+    { id: 'calculator', label: t('nav.bottomCalc'), icon: <Calculator className="w-5 h-5" /> },
+    { id: 'filaments', label: t('nav.bottomFilaments'), icon: <Layers className="w-5 h-5" /> },
+    { id: 'printers', label: t('nav.bottomPrinters'), icon: <Printer className="w-5 h-5" /> },
+    { id: 'history', label: t('nav.bottomHistory'), icon: <History className="w-5 h-5" /> },
+    { id: 'settings', label: t('nav.bottomSettings'), icon: <Settings className="w-5 h-5" /> },
   ];
 
   return (

@@ -7,8 +7,12 @@ import {
   Settings as SettingsIcon,
   X,
   HardDrive,
+  Globe,
 } from 'lucide-react';
 import { useCalculatorStore, type ActiveTab } from '../../store/useCalculatorStore';
+import { useTranslation } from '../../i18n';
+import { Select } from '../common/Select';
+import type { LanguageMode } from '../../types';
 
 interface NavItem {
   id: ActiveTab;
@@ -19,6 +23,7 @@ interface NavItem {
 
 export const SidebarDrawer: React.FC = () => {
   const { activeTab, setActiveTab, isDrawerOpen, setDrawerOpen } = useCalculatorStore();
+  const { t, languageMode, setLanguageMode } = useTranslation();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -33,32 +38,32 @@ export const SidebarDrawer: React.FC = () => {
   const navItems: NavItem[] = [
     {
       id: 'calculator',
-      label: 'Calculadora',
-      description: 'Orçamento rápido de peças',
+      label: t('nav.calculator'),
+      description: t('nav.calculatorDesc'),
       icon: <Calculator className="w-5 h-5" />,
     },
     {
       id: 'filaments',
-      label: 'Filamentos',
-      description: 'Cadastro e custos por grama',
+      label: t('nav.filaments'),
+      description: t('nav.filamentsDesc'),
       icon: <Layers className="w-5 h-5" />,
     },
     {
       id: 'printers',
-      label: 'Impressoras',
-      description: 'Consumo (W) e taxas de desgaste',
+      label: t('nav.printers'),
+      description: t('nav.printersDesc'),
       icon: <Printer className="w-5 h-5" />,
     },
     {
       id: 'history',
-      label: 'Orçamentos Salvos',
-      description: 'Histórico e compartilhamento',
+      label: t('nav.history'),
+      description: t('nav.historyDesc'),
       icon: <History className="w-5 h-5" />,
     },
     {
       id: 'settings',
-      label: 'Configurações e Backup',
-      description: 'Tarifas, margens e dados JSON',
+      label: t('nav.settings'),
+      description: t('nav.settingsDesc'),
       icon: <SettingsIcon className="w-5 h-5" />,
     },
   ];
@@ -79,7 +84,7 @@ export const SidebarDrawer: React.FC = () => {
         className={`fixed top-0 bottom-0 left-0 z-50 w-72 sm:w-80 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col transition-transform duration-300 ease-out transform safe-area-pl ${
           isDrawerOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
-        aria-label="Menu principal"
+        aria-label={t('common.openNavMenu')}
       >
         {/* Header do Drawer */}
         <div className="px-4 pb-4 pt-[calc(1rem+var(--safe-area-top))] border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-800/50">
@@ -94,14 +99,14 @@ export const SidebarDrawer: React.FC = () => {
                 ForgeCalc<span className="text-[#065F46] dark:text-emerald-400">3D</span>
               </h1>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                Calculadora e Precificação 3D
+                {t('common.appSubtitle')}
               </p>
             </div>
           </div>
           <button
             onClick={() => setDrawerOpen(false)}
             className="p-1.5 rounded-lg text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
-            aria-label="Fechar menu"
+            aria-label={t('common.closeNavMenu')}
           >
             <X className="w-5 h-5" />
           </button>
@@ -147,14 +152,33 @@ export const SidebarDrawer: React.FC = () => {
           })}
         </nav>
 
+        {/* Seletor de Idioma (Logo acima do Rodapé) */}
+        <div className="px-4 py-3 border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+            <Globe className="w-3.5 h-3.5 text-[#065F46] dark:text-emerald-400" />
+            <span>{t('common.language')}</span>
+          </div>
+          <Select
+            id="sidebar-language-select"
+            value={languageMode}
+            onChange={(e) => setLanguageMode(e.target.value as LanguageMode)}
+            options={[
+              { value: 'system', label: t('common.langAuto') },
+              { value: 'pt', label: 'Português' },
+              { value: 'en', label: 'English' },
+            ]}
+            className="text-xs py-1.5"
+          />
+        </div>
+
         {/* Rodapé do Drawer */}
         <div className="px-4 pt-4 pb-[calc(1rem+var(--safe-area-bottom))] border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
           <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
             <HardDrive className="w-4 h-4 text-[#065F46] dark:text-emerald-400" />
-            <span>Dados gravados localmente (IndexedDB)</span>
+            <span>{t('common.localDbInfo')}</span>
           </div>
           <div className="mt-2 text-[11px] text-slate-400 dark:text-slate-500">
-            ForgeCalc3D v1.0 • Operação 100% Offline
+            {t('common.allRightsReserved')}
           </div>
         </div>
       </aside>
