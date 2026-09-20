@@ -112,7 +112,7 @@ ${pieceName ? `📦 Peça: *${pieceName}*` : ''}
 
   return (
     <>
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border-2 border-emerald-800/20 dark:border-emerald-500/30 shadow-md p-5 sm:p-6 relative overflow-hidden transition-colors duration-200">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border-2 border-emerald-800/20 dark:border-emerald-500/30 shadow-md p-4 sm:p-6 relative overflow-hidden transition-colors duration-200">
         {/* Detalhe visual de topo em verde esmeralda */}
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#065F46] dark:bg-emerald-500" />
 
@@ -428,7 +428,7 @@ ${pieceName ? `📦 Peça: *${pieceName}*` : ''}
               disabled={!savePieceName.trim()}
               icon={<BookmarkCheck className="w-4 h-4" />}
             >
-              Confirmar & Salvar
+              Confirmar e Salvar
             </Button>
           </div>
         </form>

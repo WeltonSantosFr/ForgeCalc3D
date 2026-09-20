@@ -44,19 +44,20 @@ export const PrinterList: React.FC = () => {
   return (
     <div className="space-y-5 animate-in fade-in duration-200">
       {/* Cabeçalho */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-center sm:text-left">
         <div>
-          <h1 className="font-heading text-2xl font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-            <PrinterIcon className="w-6 h-6 text-[#065F46] dark:text-emerald-400" />
-            Gestão de Impressoras 3D
+          <h1 className="font-heading text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center justify-center sm:justify-start gap-2">
+            <PrinterIcon className="w-5 h-5 sm:w-6 sm:h-6 text-[#065F46] dark:text-emerald-400 shrink-0" />
+            <span>Gestão de Impressoras 3D</span>
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xl mx-auto sm:mx-0">
             Cadastre suas máquinas e configure potência média e reservas de manutenção
           </p>
         </div>
         <Button
           variant="primary"
-          icon={<Plus className="w-4 h-4" />}
+          icon={<Plus className="w-4 h-4 shrink-0" />}
+          className="w-full sm:w-auto justify-center shrink-0"
           onClick={() => {
             setPrinterToEdit(null);
             setIsModalOpen(true);
