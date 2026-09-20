@@ -11,6 +11,7 @@ import {
 import { db } from '../../db/db';
 import type { Filament } from '../../types';
 import { useCalculatorStore } from '../../store/useCalculatorStore';
+import { useTranslation } from '../../i18n';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { FilamentModal } from './FilamentModal';
@@ -19,6 +20,7 @@ import { formatCurrency, formatGrams, formatPercent } from '../../utils/formatte
 export const FilamentList: React.FC = () => {
   const filaments = useLiveQuery(() => db.filaments.toArray()) || [];
   const { setInput, setActiveTab } = useCalculatorStore();
+  const { t, language } = useTranslation();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedMaterial, setSelectedMaterial] = useState<string>('all');
@@ -47,7 +49,7 @@ export const FilamentList: React.FC = () => {
   };
 
   const handleDelete = async (id: string, name: string) => {
-    if (window.confirm(`Deseja realmente excluir o filamento "${name}"?`)) {
+    if (window.confirm(t('filaments.deleteConfirmDesc', { name }))) {
       await db.filaments.delete(id);
     }
   };
@@ -67,10 +69,10 @@ export const FilamentList: React.FC = () => {
         <div>
           <h1 className="font-heading text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white flex items-center justify-center sm:justify-start gap-2">
             <Layers className="w-5 h-5 sm:w-6 sm:h-6 text-[#065F46] dark:text-emerald-400 shrink-0" />
-            <span>Gestão de Filamentos e Resinas</span>
+            <span>{t('filaments.title')}</span>
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xl mx-auto sm:mx-0">
-            Cadastre seus carretéis e acompanhe o custo exato por grama de cada material
+            {t('filaments.subtitle')}
           </p>
         </div>
         <Button
@@ -82,7 +84,7 @@ export const FilamentList: React.FC = () => {
             setIsModalOpen(true);
           }}
         >
-          Novo Filamento
+          {t('filaments.newFilament')}
         </Button>
       </div>
 
@@ -91,7 +93,7 @@ export const FilamentList: React.FC = () => {
         <div className="flex-1">
           <Input
             icon={<Search className="w-4 h-4" />}
-            placeholder="Buscar por nome ou material..."
+            placeholder={language === 'pt' ? 'Buscar por nome ou material...' : 'Search by name or material...'}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -102,19 +104,19 @@ export const FilamentList: React.FC = () => {
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
             <button
               onClick={() => setSelectedMaterial('all')}
-              className={`text-xs px-3 py-2 rounded-lg border font-medium whitespace-nowrap transition-colors ${
+              className={`text-xs px-3 py-2 rounded-lg border font-medium whitespace-nowrap transition-colors cursor-pointer ${
                 selectedMaterial === 'all'
                   ? 'bg-[#065F46] dark:bg-emerald-600 text-white border-[#065F46] dark:border-emerald-600'
                   : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'
               }`}
             >
-              Todos ({filaments.length})
+              {t('common.all')} ({filaments.length})
             </button>
             {uniqueMaterials.map((mat) => (
               <button
                 key={mat}
                 onClick={() => setSelectedMaterial(mat)}
-                className={`text-xs px-3 py-2 rounded-lg border font-medium whitespace-nowrap transition-colors ${
+                className={`text-xs px-3 py-2 rounded-lg border font-medium whitespace-nowrap transition-colors cursor-pointer ${
                   selectedMaterial === mat
                     ? 'bg-[#065F46] dark:bg-emerald-600 text-white border-[#065F46] dark:border-emerald-600'
                     : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'
@@ -145,7 +147,7 @@ export const FilamentList: React.FC = () => {
                       <div
                         className="w-4 h-4 rounded-full border border-slate-300 dark:border-slate-600 shrink-0 shadow-2xs"
                         style={{ backgroundColor: f.colorHex || '#0F172A' }}
-                        title={`Cor: ${f.colorHex || '#0F172A'}`}
+                        title={`${t('filaments.color')}: ${f.colorHex || '#0F172A'}`}
                       />
                       <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
                         {f.material}
@@ -155,15 +157,15 @@ export const FilamentList: React.FC = () => {
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => handleEdit(f)}
-                        className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
-                        title="Editar"
+                        className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                        title={t('common.edit')}
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleDelete(f.id, f.name)}
-                        className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors"
-                        title="Excluir"
+                        className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors cursor-pointer"
+                        title={t('common.delete')}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -178,27 +180,27 @@ export const FilamentList: React.FC = () => {
                   {/* Detalhes Financeiros */}
                   <div className="space-y-1.5 text-xs text-slate-600 dark:text-slate-300 mb-4 bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-slate-100 dark:border-slate-700/60">
                     <div className="flex justify-between">
-                      <span className="text-slate-500 dark:text-slate-400">Preço do Carretel:</span>
+                      <span className="text-slate-500 dark:text-slate-400">{t('calc.spoolPrice')}:</span>
                       <span className="font-semibold text-slate-900 dark:text-white">
-                        {formatCurrency(f.spoolPrice)}
+                        {formatCurrency(f.spoolPrice, language)}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500 dark:text-slate-400">Peso do Carretel:</span>
+                      <span className="text-slate-500 dark:text-slate-400">{t('calc.spoolWeight')}:</span>
                       <span className="font-semibold text-slate-900 dark:text-white">
-                        {formatGrams(f.spoolWeightGrams)}
+                        {formatGrams(f.spoolWeightGrams, language)}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500 dark:text-slate-400">Perda Padrão:</span>
+                      <span className="text-slate-500 dark:text-slate-400">{t('filaments.defaultLossMargin')}:</span>
                       <span className="font-semibold text-slate-900 dark:text-white">
-                        {formatPercent(f.defaultLossMarginPercent)}
+                        {formatPercent(f.defaultLossMarginPercent, language)}
                       </span>
                     </div>
                     <div className="flex justify-between pt-1 border-t border-slate-200/60 dark:border-slate-700">
-                      <span className="font-semibold text-[#065F46] dark:text-emerald-400">Custo por Grama:</span>
+                      <span className="font-semibold text-[#065F46] dark:text-emerald-400">{t('calc.costPerGram')}:</span>
                       <span className="font-extrabold text-[#065F46] dark:text-emerald-400 text-sm">
-                        {formatCurrency(costPerGram)}/g
+                        {formatCurrency(costPerGram, language)}/g
                       </span>
                     </div>
                   </div>
@@ -212,7 +214,7 @@ export const FilamentList: React.FC = () => {
                   icon={<Calculator className="w-3.5 h-3.5" />}
                   onClick={() => handleUseInCalculator(f)}
                 >
-                  Usar na Calculadora
+                  {t('calc.useInCalculator')}
                 </Button>
               </div>
             );
@@ -226,13 +228,13 @@ export const FilamentList: React.FC = () => {
           </div>
           <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-white mb-1">
             {searchTerm || selectedMaterial !== 'all'
-              ? 'Nenhum filamento encontrado'
-              : 'Nenhum filamento cadastrado ainda'}
+              ? (language === 'pt' ? 'Nenhum filamento encontrado' : 'No filaments found')
+              : t('filaments.empty')}
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-5">
             {searchTerm || selectedMaterial !== 'all'
-              ? 'Tente remover os filtros ou buscar por outro termo.'
-              : 'Cadastre os filamentos e resinas que você utiliza no seu estúdio para agilizar orçamentos automáticos.'}
+              ? (language === 'pt' ? 'Tente remover os filtros ou buscar por outro termo.' : 'Try clearing filters or searching for another term.')
+              : t('filaments.emptyDesc')}
           </p>
           <Button
             variant="primary"
@@ -242,7 +244,7 @@ export const FilamentList: React.FC = () => {
               setIsModalOpen(true);
             }}
           >
-            Cadastrar Primeiro Filamento
+            {language === 'pt' ? 'Cadastrar Primeiro Filamento' : 'Register First Filament'}
           </Button>
         </div>
       )}

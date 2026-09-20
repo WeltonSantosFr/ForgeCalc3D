@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useCalculatorStore } from './store/useCalculatorStore';
 import { useThemeStore } from './store/useThemeStore';
+import { useLanguageStore } from './store/useLanguageStore';
 import { ensureDefaultSettings } from './db/db';
 import { Header } from './components/layout/Header';
 import { SidebarDrawer } from './components/layout/SidebarDrawer';
@@ -14,16 +15,20 @@ import { SettingsView } from './components/settings/SettingsView';
 export const App: React.FC = () => {
   const { activeTab, applySettingsDefaults } = useCalculatorStore();
   const { initTheme } = useThemeStore();
+  const { initLanguage } = useLanguageStore();
 
   useEffect(() => {
     // Inicializa o tema ativo (localStorage / preferências do sistema)
     initTheme();
 
+    // Inicializa o idioma ativo (localStorage / preferências do sistema)
+    initLanguage();
+
     // Inicializa as configurações padrão no IndexedDB caso ainda não existam
     ensureDefaultSettings().then((settings) => {
       applySettingsDefaults(settings);
     });
-  }, [applySettingsDefaults, initTheme]);
+  }, [applySettingsDefaults, initTheme, initLanguage]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#090D16] text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">

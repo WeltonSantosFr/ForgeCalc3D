@@ -12,6 +12,7 @@ import {
 import { db } from '../../db/db';
 import type { SavedCalculation } from '../../types';
 import { useCalculatorStore } from '../../store/useCalculatorStore';
+import { useTranslation } from '../../i18n';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { formatCurrency, formatGrams } from '../../utils/formatters';
@@ -20,6 +21,7 @@ export const SavedCalculations: React.FC = () => {
   const calculations =
     useLiveQuery(() => db.savedCalculations.orderBy('createdAt').reverse().toArray()) || [];
   const { loadSavedCalculation, setActiveTab } = useCalculatorStore();
+  const { t, language } = useTranslation();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -30,33 +32,33 @@ export const SavedCalculations: React.FC = () => {
   );
 
   const handleDelete = async (id: string, name: string) => {
-    if (window.confirm(`Deseja realmente excluir o orçamento da peça "${name}"?`)) {
+    if (window.confirm(t('history.deleteConfirmDesc', { name }))) {
       await db.savedCalculations.delete(id);
     }
   };
 
   const handleCopy = async (calc: SavedCalculation) => {
     const text = `
-🎯 *ORÇAMENTO DE IMPRESSÃO 3D - FORGECALC3D*
-📦 Peça: *${calc.name}*
-📅 Data: ${new Date(calc.createdAt).toLocaleDateString('pt-BR')}
+🎯 *${language === 'pt' ? 'ORÇAMENTO DE IMPRESSÃO 3D - FORGECALC3D' : '3D PRINT QUOTATION - FORGECALC3D'}*
+📦 ${language === 'pt' ? 'Peça' : 'Part'}: *${calc.name}*
+📅 ${language === 'pt' ? 'Data' : 'Date'}: ${new Date(calc.createdAt).toLocaleDateString(language === 'en' ? 'en-US' : 'pt-BR')}
 ───────────────
-🧵 Filamento: ${calc.filamentName || 'Manual'} (${formatGrams(calc.result.filamentWeightWithLoss)})
-⏱️ Tempo de Impressão: ${calc.input.printHours || 0}h ${calc.input.printMinutes || 0}m
-⚡ Impressora: ${calc.printerName || 'Manual'}
+🧵 ${language === 'pt' ? 'Filamento' : 'Filament'}: ${calc.filamentName || (language === 'pt' ? 'Manual' : 'Custom')} (${formatGrams(calc.result.filamentWeightWithLoss, language)})
+⏱️ ${language === 'pt' ? 'Tempo de Impressão' : 'Print Time'}: ${calc.input.printHours || 0}h ${calc.input.printMinutes || 0}m
+⚡ ${language === 'pt' ? 'Impressora' : 'Printer'}: ${calc.printerName || (language === 'pt' ? 'Manual' : 'Custom')}
 
-📊 *Composição de Custos:*
-• Filamento: ${formatCurrency(calc.result.filamentCost)}
-• Energia Elétrica: ${formatCurrency(calc.result.energyCost)}
-• Mão de Obra: ${formatCurrency(calc.result.laborCost)}
-• Manutenção: ${formatCurrency(calc.result.maintenanceCost)}
-• Insumos Extras: ${formatCurrency(calc.result.extraCostsTotal)}
+📊 *${t('calc.costBreakdown')}:*
+• ${t('calc.filamentCost')}: ${formatCurrency(calc.result.filamentCost, language)}
+• ${t('calc.energyCost')}: ${formatCurrency(calc.result.energyCost, language)}
+• ${t('calc.operatorLabor')}: ${formatCurrency(calc.result.laborCost, language)}
+• ${t('calc.maintenanceCost')}: ${formatCurrency(calc.result.maintenanceCost, language)}
+• ${t('calc.extrasTotal')}: ${formatCurrency(calc.result.extraCostsTotal, language)}
 ───────────────
-💰 *Custo Total de Produção: ${formatCurrency(calc.result.totalCost)}*
+💰 *${t('calc.totalCost')}: ${formatCurrency(calc.result.totalCost, language)}*
 
-🏷️ *Preço Revendedor (${calc.input.resellerMultiplier}x): ${formatCurrency(calc.result.resellerPrice)}*
-⭐ *Preço Consumidor Final (${calc.input.retailMultiplier}x): ${formatCurrency(calc.result.retailPrice)}*
-${calc.notes ? `\n📝 Observações: ${calc.notes}` : ''}
+🏷️ *${t('calc.wholesalePrice')} (${calc.input.resellerMultiplier}x): ${formatCurrency(calc.result.resellerPrice, language)}*
+⭐ *${t('calc.retailPrice')} (${calc.input.retailMultiplier}x): ${formatCurrency(calc.result.retailPrice, language)}*
+${calc.notes ? `\n📝 ${t('calc.notes')}: ${calc.notes}` : ''}
 `.trim();
 
     try {
@@ -75,10 +77,10 @@ ${calc.notes ? `\n📝 Observações: ${calc.notes}` : ''}
         <div>
           <h1 className="font-heading text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-slate-100 flex items-center justify-center sm:justify-start gap-2">
             <History className="w-5 h-5 sm:w-6 sm:h-6 text-[#065F46] dark:text-emerald-400 shrink-0" />
-            <span>Orçamentos Salvos</span>
+            <span>{t('history.title')}</span>
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xl mx-auto sm:mx-0">
-            Consulte históricos, recarregue parâmetros na calculadora ou envie para clientes
+            {t('history.subtitle')}
           </p>
         </div>
       </div>
@@ -88,7 +90,7 @@ ${calc.notes ? `\n📝 Observações: ${calc.notes}` : ''}
         <div className="max-w-md mx-auto sm:mx-0">
           <Input
             icon={<Search className="w-4 h-4" />}
-            placeholder="Buscar por nome da peça ou notas..."
+            placeholder={language === 'pt' ? 'Buscar por nome da peça ou notas...' : 'Search by part name or notes...'}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -107,7 +109,7 @@ ${calc.notes ? `\n📝 Observações: ${calc.notes}` : ''}
                 <div className="flex items-start justify-between gap-2 mb-1.5">
                   <span className="text-[11px] text-slate-400 dark:text-slate-500 flex items-center gap-1 font-medium">
                     <Calendar className="w-3.5 h-3.5" />
-                    {new Date(calc.createdAt).toLocaleDateString('pt-BR', {
+                    {new Date(calc.createdAt).toLocaleDateString(language === 'en' ? 'en-US' : 'pt-BR', {
                       day: '2-digit',
                       month: 'short',
                       year: 'numeric',
@@ -118,8 +120,8 @@ ${calc.notes ? `\n📝 Observações: ${calc.notes}` : ''}
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => handleCopy(calc)}
-                      className="p-1.5 text-slate-400 hover:text-[#065F46] hover:bg-emerald-50 dark:hover:text-emerald-400 dark:hover:bg-emerald-950/40 rounded-lg transition-colors"
-                      title="Copiar texto do orçamento"
+                      className="p-1.5 text-slate-400 hover:text-[#065F46] hover:bg-emerald-50 dark:hover:text-emerald-400 dark:hover:bg-emerald-950/40 rounded-lg transition-colors cursor-pointer"
+                      title={language === 'pt' ? 'Copiar texto do orçamento' : 'Copy quote summary'}
                     >
                       {copiedId === calc.id ? (
                         <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
@@ -129,8 +131,8 @@ ${calc.notes ? `\n📝 Observações: ${calc.notes}` : ''}
                     </button>
                     <button
                       onClick={() => handleDelete(calc.id, calc.name)}
-                      className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:text-rose-400 dark:hover:bg-rose-950/40 rounded-lg transition-colors"
-                      title="Excluir orçamento"
+                      className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:text-rose-400 dark:hover:bg-rose-950/40 rounded-lg transition-colors cursor-pointer"
+                      title={t('common.delete')}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -142,7 +144,7 @@ ${calc.notes ? `\n📝 Observações: ${calc.notes}` : ''}
                 </h2>
 
                 <div className="text-xs text-slate-500 dark:text-slate-400 mb-3 flex flex-wrap gap-x-2 gap-y-1">
-                  <span>🧵 {calc.filamentName || 'Manual'}</span>
+                  <span>🧵 {calc.filamentName || (language === 'pt' ? 'Manual' : 'Custom')}</span>
                   <span>•</span>
                   <span>⏱️ {calc.input.printHours || 0}h{calc.input.printMinutes || 0}m</span>
                 </div>
@@ -156,15 +158,15 @@ ${calc.notes ? `\n📝 Observações: ${calc.notes}` : ''}
                 {/* Preços */}
                 <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-800 space-y-1 mb-4 text-xs">
                   <div className="flex justify-between items-baseline">
-                    <span className="text-slate-500 dark:text-slate-400">Custo Total:</span>
+                    <span className="text-slate-500 dark:text-slate-400">{t('calc.totalCost')}:</span>
                     <span className="font-bold text-slate-900 dark:text-slate-100 text-sm">
-                      {formatCurrency(calc.result.totalCost)}
+                      {formatCurrency(calc.result.totalCost, language)}
                     </span>
                   </div>
                   <div className="flex justify-between items-baseline">
-                    <span className="text-slate-500 dark:text-slate-400">Preço Consumidor Final:</span>
+                    <span className="text-slate-500 dark:text-slate-400">{t('calc.retailPrice')}:</span>
                     <span className="font-bold text-[#065F46] dark:text-emerald-400 text-sm">
-                      {formatCurrency(calc.result.retailPrice)}
+                      {formatCurrency(calc.result.retailPrice, language)}
                     </span>
                   </div>
                 </div>
@@ -177,7 +179,7 @@ ${calc.notes ? `\n📝 Observações: ${calc.notes}` : ''}
                 icon={<Calculator className="w-3.5 h-3.5" />}
                 onClick={() => loadSavedCalculation(calc)}
               >
-                Recarregar na Calculadora
+                {t('history.reloadInCalculator')}
               </Button>
             </div>
           ))}
@@ -188,17 +190,17 @@ ${calc.notes ? `\n📝 Observações: ${calc.notes}` : ''}
             <History className="w-6 h-6" />
           </div>
           <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-slate-100 mb-1">
-            {searchTerm ? 'Nenhum orçamento encontrado' : 'Nenhum orçamento salvo ainda'}
+            {searchTerm ? (language === 'pt' ? 'Nenhum orçamento encontrado' : 'No quotes found') : t('history.empty')}
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-5">
-            Ao realizar cálculos na aba Calculadora, clique em "Salvar Orçamento" para arquivar os valores da peça e poder consultá-los a qualquer momento.
+            {t('history.emptyDesc')}
           </p>
           <Button
             variant="primary"
             icon={<Calculator className="w-4 h-4" />}
             onClick={() => setActiveTab('calculator')}
           >
-            Ir para a Calculadora
+            {t('history.goToCalculator')}
           </Button>
         </div>
       )}

@@ -28,6 +28,7 @@ export const DEFAULT_SETTINGS: Settings = {
   resellerMultiplier: 3.0,
   retailMultiplier: 5.0,
   theme: 'light',
+  language: 'system',
   updatedAt: new Date().toISOString(),
 };
 

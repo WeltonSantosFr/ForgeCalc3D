@@ -19,6 +19,8 @@ export interface Printer {
 }
 
 export type ThemeMode = 'light' | 'dark' | 'system';
+export type Language = 'pt' | 'en';
+export type LanguageMode = 'system' | 'pt' | 'en';
 
 export interface Settings {
   id: number; // Chave singleton = 1
@@ -27,6 +29,7 @@ export interface Settings {
   resellerMultiplier: number; // Multiplicador padrão revenda (padrão: 3.0)
   retailMultiplier: number; // Multiplicador padrão consumidor final (padrão: 5.0)
   theme?: ThemeMode; // Modo de tema visual (claro, escuro ou sistema)
+  language?: LanguageMode; // Modo de idioma (sistema, português ou inglês)
   updatedAt: string;
 }
 
